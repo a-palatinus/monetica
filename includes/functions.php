@@ -20,52 +20,6 @@ function formatirajDatum($datum) {
     return date('j', $ts) . '. ' . $mjeseci[(int)date('n', $ts)] . ' ' . date('Y', $ts) . '.';
 }
 
-function dohvatiRSS($url, $max = 6) {
-    $vijesti = [];
-    try {
-        if (function_exists('curl_init')) {
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 10,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_MAXREDIRS      => 5,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; Monetica/1.0)',
-                CURLOPT_ENCODING       => 'gzip, deflate',
-            ]);
-            $sadrzaj = curl_exec($ch);
-            curl_close($ch);
-        } else {
-            $ctx = stream_context_create(['http' => [
-                'timeout'    => 10,
-                'user_agent' => 'Mozilla/5.0 (compatible; Monetica/1.0)',
-            ]]);
-            $sadrzaj = @file_get_contents($url, false, $ctx);
-        }
-
-        if (!$sadrzaj) return $vijesti;
-
-        $xml = simplexml_load_string($sadrzaj, 'SimpleXMLElement', LIBXML_NOCDATA);
-        if (!$xml) return $vijesti;
-
-        $stavke = $xml->channel->item ?? [];
-        $br = 0;
-        foreach ($stavke as $stavka) {
-            if ($br >= $max) break;
-            $vijesti[] = [
-                'naslov' => (string)$stavka->title,
-                'opis'   => strip_tags((string)$stavka->description),
-                'link'   => (string)$stavka->link,
-                'datum'  => (string)$stavka->pubDate,
-            ];
-            $br++;
-        }
-    } catch (Exception $e) {
-    }
-    return $vijesti;
-}
 
 function dohvatiDjelaXML($kategorija = null) {
     $putanja = __DIR__ . '/../data/galerija.xml';

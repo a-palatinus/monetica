@@ -6,7 +6,10 @@ define('DB_PASS', '');
 define('DB_NAME', 'monetica');
 
 if (!defined('BASE_URL')) {
-    define('BASE_URL', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\'));
+    $docRoot  = realpath($_SERVER['DOCUMENT_ROOT']);
+    $projRoot = realpath(dirname(__DIR__));
+    $relative = substr($projRoot, strlen($docRoot));
+    define('BASE_URL', rtrim(str_replace('\\', '/', $relative), '/'));
 }
 
 try {

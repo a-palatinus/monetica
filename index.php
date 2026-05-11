@@ -21,7 +21,7 @@ include 'includes/header.php';
     <div class="hero-sadrzaj">
         <h1 class="hero-naslov">
             Dobrodošli u<br>
-            <span>Monetica</span>
+            <span>Moneticu</span>
         </h1>
         <p class="hero-podnaslov">
             Digitalna platforma Umjetničkog društva Monetica — gdje se tradicija susreće s kreativnošću

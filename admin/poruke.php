@@ -24,14 +24,6 @@ include '../includes/header.php';
 
         <h2 class="naslov-sekcija lijevo">Kontakt poruke</h2>
 
-        <div class="poruka-info" style="text-align: center; padding: 60px 20px;">
-            <i class="fa fa-tools" style="font-size: 3rem; color: var(--boja-akcent); display: block; margin-bottom: 20px;"></i>
-            <h3 style="margin-bottom: 10px;">Ova funkcionalnost je u razvoju</h3>
-            <p style="color: var(--boja-siva); max-width: 500px; margin: 0 auto;">
-                Prikaz i upravljanje kontakt porukama bit će implementirano u sljedećoj fazi razvoja.
-                Poruke se trenutno uredno pohranjuju u bazu podataka putem kontakt forme.
-            </p>
-        </div>
 
     </div>
 </section>

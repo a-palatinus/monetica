@@ -229,9 +229,7 @@ ul { list-style: none; }
 .dropdown-menu-nav li a:hover { background: var(--boja-pozadina); color: var(--boja-primarni); }
 .dropdown-menu-nav li a i { width: 20px; color: var(--boja-akcent); }
 .dropdown-divider-nav { border-top: 1px solid var(--boja-siva-sv); margin: 4px 0; }
-.nav-spacer { 
-    height: 68px; 
-}
+
 .hamburger {
     display: none;
     flex-direction: column;
@@ -253,7 +251,7 @@ ul { list-style: none; }
 
 
 .hero {
-    min-height: 88vh;
+    min-height: 95vh;
     background:
         linear-gradient(to bottom, rgba(20,12,5,0.52) 0%, rgba(20, 12, 5, 0.789) 100%),
         url('/monetica/images/header.jpg') center / cover no-repeat;
@@ -303,7 +301,7 @@ ul { list-style: none; }
     color: rgba(255,255,255,0.7);
     max-width: 560px;
     margin: 0 auto 44px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.75;
 }
 .hero-gumbi { 
