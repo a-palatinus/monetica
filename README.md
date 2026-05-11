@@ -1,0 +1,1 @@
+Prvo pokrenuti setup.php
