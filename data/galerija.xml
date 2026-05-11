@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<galerija xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="galerija.xsd">
+
+    <djelo id="1">
+        <naslov>Nikol</naslov>
+        <autor>Marija Kovač</autor>
+        <tehnika>Ulje na platnu</tehnika>
+        <godina>2023</godina>
+        <dimenzije>80 × 60 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/djevojka.jfif</slika>
+        <opis>Idiličan prizor djevojčice na plaži. </opis>
+    </djelo>
+
+    <djelo id="2">
+        <naslov>Rapsodija u zelenom</naslov>
+        <autor>Rade Grahovac</autor>
+        <tehnika>Akril</tehnika>
+        <godina>2022</godina>
+        <dimenzije>70 × 50 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/rapsodija.jpg</slika>
+        <opis>Svježi zavičaj.</opis>
+    </djelo>
+
+    <djelo id="3">
+        <naslov>Jaganjac</naslov>
+        <autor>Valentina Ćurković</autor>
+        <tehnika>Grafitna olovka</tehnika>
+        <godina>2025</godina>
+        <dimenzije>A3</dimenzije>
+        <kategorija>Crtež</kategorija>
+        <slika>/monetica/images/djela/isus.jpg</slika>
+        <opis>Portret Isusa Krista dok nosi križ. </opis>
+    </djelo>
+
+    <djelo id="4">
+        <naslov>Konec</naslov>
+        <autor>Jovica Durdev</autor>
+        <tehnika>Akril na platnu</tehnika>
+        <godina>2024</godina>
+        <dimenzije> 40 × 60 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/konec.jpg</slika>
+        <opis>Bogat zalazak Sunca nad jezerom.</opis>
+    </djelo>
+
+    <djelo id="5">
+        <naslov>Plov u suton</naslov>
+        <autor>Luka Tomić</autor>
+        <tehnika>Akril na platnu</tehnika>
+        <godina>2023</godina>
+        <dimenzije>40 × 60 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/suton.jpg</slika>
+        <opis>Plov brodova kroz sutonske valove.</opis>
+    </djelo>
+
+    <djelo id="6">
+        <naslov>Miris prirode</naslov>
+        <autor>Ana Blažević</autor>
+        <tehnika>Ulje na platnu</tehnika>
+        <godina>2023</godina>
+        <dimenzije>70 × 90 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/priroda.jfif</slika>
+        <opis>Prikaz mirnog proljetnog dana na seoskom imanju.</opis>
+    </djelo>
+
+    <djelo id="7">
+        <naslov>Cveteki</naslov>
+        <autor>Marko Jurić</autor>
+        <tehnika>Ulje na platnu</tehnika>
+        <godina>2021</godina>
+        <dimenzije>35 × 60 cm</dimenzije>
+        <kategorija>Slikarstvo</kategorija>
+        <slika>/monetica/images/djela/vaza.jfif</slika>
+        <opis>Plava vaza obasjana prirodnim svijetlom s prozora.</opis>
+    </djelo>
+
+    <djelo id="8">
+        <naslov>Neda Arnerić</naslov>
+        <autor>Petar Dimitrijević</autor>
+        <tehnika>Grafitna olovka</tehnika>
+        <godina>2026</godina>
+        <dimenzije>A4</dimenzije>
+        <kategorija>Crtež</kategorija>
+        <slika>/monetica/images/djela/neda.jpg</slika>
+        <opis>Portret poluprofila iz gornjeg rakursa.</opis>
+    </djelo>
+
+    <djelo id="9">
+        <naslov>Zagrebačkim ulicama</naslov>
+        <autor>Nika Gatić</autor>
+        <tehnika>Fotografija</tehnika>
+        <godina>2022</godina>
+        <dimenzije></dimenzije>
+        <kategorija>Fotografija</kategorija>
+        <slika>/monetica/images/djela/zg.jpg</slika>
+        <opis>Fotografija usamljene zagrebačke ulice.</opis>
+    </djelo>
+
+</galerija>
