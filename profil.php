@@ -119,11 +119,6 @@ include 'includes/header.php';
                     <textarea id="bio" name="bio" placeholder="Nešto o sebi..."><?= ocisti($korisnik['bio'] ?? '') ?></textarea>
                 </div>
 
-                <div class="poruka-info" style="font-size: 0.9rem;">
-                    <i class="fa fa-info-circle"></i>
-                    Mogućnost promjene profilne slike bit će dodana uskoro.
-                </div>
-
                 <button type="submit" class="btn btn-primarni" style="margin-top: 15px;">
                     <i class="fa fa-save"></i> Spremi promjene
                 </button>
