@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
@@ -7,13 +7,16 @@ zahtijevajPrijavu();
 
 $naslovStranice = 'Moji favoriti';
 
+// dohvacanje favorita
 $stmt = $pdo->prepare("SELECT * FROM favoriti WHERE korisnik_id = ? ORDER BY datum_dodavanja DESC");
 $stmt->execute([$_SESSION['korisnik_id']]);
 $favoriti = $stmt->fetchAll();
 
+// razdvajanje favorita
 $favXML = array_filter($favoriti, fn($f) => $f['izvor'] === 'xml');
 $favAPI = array_filter($favoriti, fn($f) => $f['izvor'] === 'api');
 
+// za XML favorite, dohvati sve XML podatke i filtriraj po ID-u
 $svaDjelaXML = dohvatiDjelaXML();
 $favDjelaXML = [];
 foreach ($svaDjelaXML as $djelo) {

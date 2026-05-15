@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $djeloId = trim($_POST['djelo_id'] ?? '');
 $izvor   = trim($_POST['izvor']    ?? '');
 
+// validacija
 if (empty($djeloId) || !in_array($izvor, ['xml', 'api'])) {
     echo json_encode(['status' => 'greska']);
     exit;
@@ -24,6 +25,7 @@ if (empty($djeloId) || !in_array($izvor, ['xml', 'api'])) {
 
 $korisnikId = $_SESSION['korisnik_id'];
 
+// provjera je li djelo već u favoritima
 $stmt = $pdo->prepare("SELECT id FROM favoriti WHERE korisnik_id = ? AND djelo_id = ? AND izvor = ?");
 $stmt->execute([$korisnikId, $djeloId, $izvor]);
 $postojeci = $stmt->fetch();

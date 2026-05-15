@@ -1,4 +1,7 @@
-﻿<?php
+<?php
+// =============================================
+// ADMIN — Upravljanje vijestima/blogom
+// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -9,6 +12,7 @@ $naslovStranice = 'Vijesti';
 $poruka = '';
 $greska = '';
 
+// ─── Brisanje vijesti ───
 if (isset($_GET['brisi'])) {
     $id = (int)$_GET['brisi'];
     $pdo->prepare("DELETE FROM vijesti WHERE id = ?")->execute([$id]);
@@ -16,6 +20,7 @@ if (isset($_GET['brisi'])) {
     exit;
 }
 
+// ─── Dodavanje nove vijesti ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $naslov = trim($_POST['naslov'] ?? '');
     $tekst  = trim($_POST['tekst']  ?? '');
@@ -30,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Dohvati sve vijesti
 $vijesti = $pdo->query("SELECT v.*, k.ime, k.prezime FROM vijesti v LEFT JOIN korisnici k ON v.autor_id = k.id ORDER BY v.datum DESC")->fetchAll();
 
 include '../includes/header.php';
@@ -57,8 +63,9 @@ include '../includes/header.php';
             <div class="poruka-greska"><i class="fa fa-exclamation-circle"></i> <?= ocisti($greska) ?></div>
         <?php endif; ?>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+        <div class="admin-2kol">
 
+            <!-- ─── Forma za dodavanje vijesti ─── -->
             <div>
                 <h2 class="naslov-sekcija lijevo" style="font-size: 1.4rem;">Dodaj novu vijest</h2>
 
@@ -81,6 +88,7 @@ include '../includes/header.php';
                 </form>
             </div>
 
+            <!-- ─── Popis vijesti ─── -->
             <div>
                 <h2 class="naslov-sekcija lijevo" style="font-size: 1.4rem;">Objavljene vijesti (<?= count($vijesti) ?>)</h2>
 

@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified">
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://monetica.hr/galerija"
+           xmlns:gal="http://monetica.hr/galerija"
+           xmlns:rad="http://monetica.hr/radionice">
+
+    <xs:import namespace="http://monetica.hr/radionice" schemaLocation="radionice.xsd"/>
 
     <xs:element name="galerija">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="djelo" type="TipDjelo"
-                            minOccurs="0" maxOccurs="unbounded"/>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="gal:djelo"/>
+                    <xs:element ref="rad:radionica"/>
+                </xs:choice>
             </xs:sequence>
         </xs:complexType>
-        <xs:unique name="jedinstvenId">
-            <xs:selector xpath="djelo"/>
-            <xs:field xpath="@id"/>
-        </xs:unique>
     </xs:element>
-    <xs:complexType name="TipDjelo">
-        <xs:all>
-            <xs:element name="naslov"     type="TipNeprazniTekst"/>
-            <xs:element name="autor"      type="TipNeprazniTekst"/>
-            <xs:element name="tehnika"    type="TipNeprazniTekst"/>
-            <xs:element name="godina"     type="TipGodina"/>
-            <xs:element name="dimenzije"  type="xs:string"/>
-            <xs:element name="kategorija" type="TipKategorija"/>
-            <xs:element name="slika"      type="xs:string"/>
-            <xs:element name="opis"       type="xs:string"/>
-        </xs:all>
-        <xs:attribute name="id" type="TipPozitivniCijeli" use="required"/>
-    </xs:complexType>
 
-    <xs:simpleType name="TipPozitivniCijeli">
-        <xs:restriction base="xs:positiveInteger"/>
-    </xs:simpleType>
-
-    <xs:simpleType name="TipNeprazniTekst">
-        <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
-            <xs:pattern value=".*\S.*"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="TipGodina">
-        <xs:restriction base="xs:integer">
-            <xs:minInclusive value="1800"/>
-            <xs:maxInclusive value="2100"/>
-        </xs:restriction>
-    </xs:simpleType>
-    
-    <xs:simpleType name="TipKategorija">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="Slikarstvo"/>
-            <xs:enumeration value="Fotografija"/>
-            <xs:enumeration value="Crtež"/>
-            <xs:enumeration value="Ostalo"/>
-        </xs:restriction>
-    </xs:simpleType>
+    <xs:element name="djelo">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="naslov">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:pattern value=".*\S.*"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="autor">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:pattern value=".*\S.*"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="tehnika">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                            <xs:pattern value=".*\S.*"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="godina">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                            <xs:minInclusive value="1800"/>
+                            <xs:maxInclusive value="2100"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="dimenzije" type="xs:string"/>
+                <xs:element name="kategorija">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Slikarstvo"/>
+                            <xs:enumeration value="Fotografija"/>
+                            <xs:enumeration value="Crtež"/>
+                            <xs:enumeration value="Ostalo"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="slika" type="xs:string"/>
+                <xs:element name="opis" type="xs:string"/>
+            </xs:all>
+            <xs:attribute name="id" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger"/>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>

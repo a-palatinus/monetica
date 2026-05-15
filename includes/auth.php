@@ -1,14 +1,7 @@
-﻿<?php
+<?php
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
-
-if (!defined('BASE_URL')) {
-    $docRoot  = realpath($_SERVER['DOCUMENT_ROOT']);
-    $projRoot = realpath(dirname(__DIR__));
-    $relative = substr($projRoot, strlen($docRoot));
-    define('BASE_URL', rtrim(str_replace('\\', '/', $relative), '/'));
 }
 
 function jePrijavljen() {
@@ -19,6 +12,7 @@ function jeAdmin() {
     return isset($_SESSION['uloga']) && $_SESSION['uloga'] === 'admin';
 }
 
+// preusmjeravanje na prijavu ako korisnik nije prijavljen
 function zahtijevajPrijavu() {
     if (!jePrijavljen()) {
         header('Location: ' . BASE_URL . '/prijava.php?poruka=morate_se_prijaviti');
@@ -26,6 +20,7 @@ function zahtijevajPrijavu() {
     }
 }
 
+// preusmjeravanje na početnu ako korisnik nije admin
 function zahtijevajAdmina() {
     if (!jeAdmin()) {
         header('Location: ' . BASE_URL . '/index.php');
@@ -33,6 +28,7 @@ function zahtijevajAdmina() {
     }
 }
 
+// pohrana podatke o korisniku u sesiju nakon prijave
 function postavljiSesiju($korisnik) {
     $_SESSION['korisnik_id']  = $korisnik['id'];
     $_SESSION['ime']          = $korisnik['ime'];
@@ -41,6 +37,7 @@ function postavljiSesiju($korisnik) {
     $_SESSION['uloga']        = $korisnik['uloga'];
 }
 
+// dohvacanje punog imena korisnika
 function punoIme() {
     if (jePrijavljen()) {
         return ($_SESSION['ime'] ?? '') . ' ' . ($_SESSION['prezime'] ?? '');

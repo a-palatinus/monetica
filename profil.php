@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
@@ -24,16 +24,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($ime) || empty($prezime)) {
             $greska = 'Ime i prezime su obavezni.';
         } else {
-            $stmt = $pdo->prepare("UPDATE korisnici SET ime = ?, prezime = ?, bio = ? WHERE id = ?");
-            $stmt->execute([$ime, $prezime, $bio, $_SESSION['korisnik_id']]);
+            $novaSlika = $korisnik['profilna_slika'];
+            if (isset($_FILES['profilna_slika']) && $_FILES['profilna_slika']['error'] === UPLOAD_ERR_OK) {
+                $dozvoljeniTipovi = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $tip = mime_content_type($_FILES['profilna_slika']['tmp_name']);
 
-            $_SESSION['ime']     = $ime;
-            $_SESSION['prezime'] = $prezime;
-            $korisnik['ime']     = $ime;
-            $korisnik['prezime'] = $prezime;
-            $korisnik['bio']     = $bio;
+                if (!in_array($tip, $dozvoljeniTipovi)) {
+                    $greska = 'Dozvoljeni formati slike: JPG, PNG, GIF, WebP.';
+                } elseif ($_FILES['profilna_slika']['size'] > 2 * 1024 * 1024) {
+                    $greska = 'Slika ne smije biti veća od 2 MB.';
+                } else {
+                    $ext       = pathinfo($_FILES['profilna_slika']['name'], PATHINFO_EXTENSION);
+                    $novaSlika = 'uploads/profil_' . $_SESSION['korisnik_id'] . '_' . time() . '.' . $ext;
+                    move_uploaded_file($_FILES['profilna_slika']['tmp_name'], __DIR__ . '/' . $novaSlika);
+                }
+            }
 
-            $poruka = 'Profil je uspješno ažuriran.';
+            if (!$greska) {
+                $stmt = $pdo->prepare("UPDATE korisnici SET ime = ?, prezime = ?, bio = ?, profilna_slika = ? WHERE id = ?");
+                $stmt->execute([$ime, $prezime, $bio, $novaSlika, $_SESSION['korisnik_id']]);
+
+                $_SESSION['ime']     = $ime;
+                $_SESSION['prezime'] = $prezime;
+                $korisnik['ime']     = $ime;
+                $korisnik['prezime'] = $prezime;
+                $korisnik['bio']     = $bio;
+                $korisnik['profilna_slika'] = $novaSlika;
+
+                $poruka = 'Profil je uspješno ažuriran.';
+            }
         }
 
     } elseif ($akcija === 'promjena_lozinke') {
@@ -95,7 +114,7 @@ include 'includes/header.php';
                 <i class="fa fa-user" style="color: var(--boja-akcent);"></i> Uredi profil
             </h2>
 
-            <form action="<?= BASE_URL ?>/profil.php" method="POST">
+            <form action="<?= BASE_URL ?>/profil.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="akcija" value="uredi_profil">
 
                 <div class="forma-2kol">
@@ -119,7 +138,14 @@ include 'includes/header.php';
                     <textarea id="bio" name="bio" placeholder="Nešto o sebi..."><?= ocisti($korisnik['bio'] ?? '') ?></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primarni" style="margin-top: 15px;">
+                <div class="forma-grupa">
+                    <label for="slikaUpload">Profilna slika <small style="color: var(--boja-siva)">(JPG, PNG, max 2MB)</small></label>
+                    <input type="file" id="slikaUpload" name="profilna_slika" accept="image/*">
+                    
+                    <img id="pregledSlike" src="" alt="Pregled slike" style="display:none; margin-top:10px; width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--boja-akcent);">
+                </div>
+
+                <button type="submit" class="btn btn-primarni">
                     <i class="fa fa-save"></i> Spremi promjene
                 </button>
             </form>

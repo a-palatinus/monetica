@@ -1,16 +1,12 @@
 <?php
 
+define('ROOT_DIR', dirname(__DIR__));
+define('BASE_URL', rtrim(str_replace('\\', '/', substr(ROOT_DIR, strlen(rtrim($_SERVER['DOCUMENT_ROOT'], '/\\')))), '/'));
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'monetica');
-
-if (!defined('BASE_URL')) {
-    $docRoot  = realpath($_SERVER['DOCUMENT_ROOT']);
-    $projRoot = realpath(dirname(__DIR__));
-    $relative = substr($projRoot, strlen($docRoot));
-    define('BASE_URL', rtrim(str_replace('\\', '/', $relative), '/'));
-}
 
 try {
     $pdo = new PDO(

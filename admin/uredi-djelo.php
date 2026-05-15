@@ -1,4 +1,7 @@
-﻿<?php
+<?php
+// =============================================
+// ADMIN — Prikaz i uređivanje galerije (XML)
+// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -9,7 +12,7 @@ $naslovStranice = 'Uredi galeriju';
 $poruka = '';
 $greska = '';
 
-// brisanje djela 
+// ─── Brisanje djela ───
 if (isset($_GET['brisi'])) {
     $id = trim($_GET['brisi']);
     izbrisiDjeloXML($id);
@@ -17,7 +20,7 @@ if (isset($_GET['brisi'])) {
     exit;
 }
 
-// uredivanje
+// ─── Obrada uredivanja ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $id = $_POST['id'];
     $podaci = [
@@ -34,12 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     if (empty($podaci['naslov']) || empty($podaci['autor'])) {
         $greska = 'Naslov i autor su obavezni.';
     } else {
-        // obrada uploada slike
+        // Obrada uploada slike
         if (isset($_FILES['slika']) && $_FILES['slika']['error'] === UPLOAD_ERR_OK) {
             $ext    = pathinfo($_FILES['slika']['name'], PATHINFO_EXTENSION);
             $imeDat = 'djelo_' . $id . '_' . time() . '.' . $ext;
-            move_uploaded_file($_FILES['slika']['tmp_name'], '../images/djela/' . $imeDat);
-            $podaci['slika'] = BASE_URL . '/images/djela/' . $imeDat;
+            move_uploaded_file($_FILES['slika']['tmp_name'], ROOT_DIR . '/images/djela/' . $imeDat);
+            $podaci['slika'] = 'images/djela/' . $imeDat;
         }
 
         urediDjeloXML($id, $podaci);
@@ -47,8 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     }
 }
 
+// Dohvati sva djela za prikaz u tablici
 $svaDjela = dohvatiDjelaXML();
 
+// Odabrano djelo za uređivanje (ako je kliknut gumb Uredi)
 $uredujemo = null;
 if (isset($_GET['uredi'])) {
     foreach ($svaDjela as $d) {
@@ -65,6 +70,7 @@ include '../includes/header.php';
 <section class="sekcija" style="padding-top: 40px;">
     <div class="kontejner">
 
+        <!-- Admin navigacija -->
         <div class="admin-nav">
             <a href="<?= BASE_URL ?>/admin/index.php"><i class="fa fa-tachometer-alt"></i> Nadzorna ploča</a>
             <a href="<?= BASE_URL ?>/admin/vijesti.php"><i class="fa fa-newspaper"></i> Vijesti</a>
@@ -74,6 +80,7 @@ include '../includes/header.php';
             <a href="<?= BASE_URL ?>/admin/poruke.php"><i class="fa fa-envelope"></i> Poruke</a>
         </div>
 
+        <!-- Poruke -->
         <?php if (isset($_GET['obrisano'])): ?>
             <div class="poruka-uspjeh"><i class="fa fa-check-circle"></i> Djelo je uspješno obrisano.</div>
         <?php endif; ?>
@@ -85,7 +92,7 @@ include '../includes/header.php';
         <?php endif; ?>
 
         <?php if ($uredujemo): ?>
-            
+        <!-- ─── Forma za uređivanje odabranog djela ─── -->
         <div class="forma-omotac siroka" style="max-width: 700px; margin: 0 0 40px;">
             <h2 style="margin-bottom: 5px;">Uredi djelo</h2>
             <p class="podnaslov-forme" style="text-align:left;"><?= ocisti($uredujemo['naslov']) ?></p>
@@ -134,7 +141,7 @@ include '../includes/header.php';
                 <div class="forma-grupa">
                     <label>Trenutna slika:</label>
                     <?php if ($uredujemo['slika']): ?>
-                        <img src="<?= ocisti($uredujemo['slika']) ?>" alt="Trenutna slika" style="max-height: 100px; border-radius: 4px; display: block; margin-bottom: 8px;">
+                        <img src="<?= ocisti(urlSlike($uredujemo['slika'])) ?>" alt="Trenutna slika" style="max-height: 100px; border-radius: 4px; display: block; margin-bottom: 8px;">
                     <?php endif; ?>
                     <input type="file" id="slikaUpload" name="slika" accept="image/*">
                     <img id="pregledSlike" src="" alt="Pregled" style="display:none; margin-top:8px; max-height:80px; border-radius:4px;">
@@ -156,6 +163,7 @@ include '../includes/header.php';
         </div>
         <?php endif; ?>
 
+        <!-- ─── Popis svih djela ─── -->
         <h2 class="naslov-sekcija lijevo">Sva djela u galeriji (<?= count($svaDjela) ?>)</h2>
 
         <?php if (empty($svaDjela)): ?>
@@ -175,19 +183,19 @@ include '../includes/header.php';
                 <tbody>
                     <?php foreach ($svaDjela as $djelo): ?>
                     <tr>
-                        <td>
-                            <img src="<?= ocisti($djelo['slika']) ?>"
+                        <td data-label="Slika">
+                            <img src="<?= ocisti(urlSlike($djelo['slika'])) ?>"
                                  alt=""
                                  style="width: 60px; height: 45px; object-fit: cover; border-radius: 4px;"
                                  onerror="this.style.display='none'">
                         </td>
-                        <td><strong><?= ocisti($djelo['naslov']) ?></strong></td>
-                        <td><?= ocisti($djelo['autor']) ?></td>
-                        <td>
+                        <td data-label="Naslov"><strong><?= ocisti($djelo['naslov']) ?></strong></td>
+                        <td data-label="Autor"><?= ocisti($djelo['autor']) ?></td>
+                        <td data-label="Kategorija">
                             <span class="oznaka oznaka-korisnik"><?= ocisti($djelo['kategorija']) ?></span>
                         </td>
-                        <td><?= ocisti($djelo['godina']) ?></td>
-                        <td>
+                        <td data-label="Godina"><?= ocisti($djelo['godina']) ?></td>
+                        <td data-label="">
                             <a href="?uredi=<?= urlencode($djelo['id']) ?>"
                                style="color: var(--boja-akcent); margin-right: 10px;">
                                 <i class="fa fa-edit"></i> Uredi

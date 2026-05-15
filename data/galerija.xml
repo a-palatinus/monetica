@@ -1,104 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<galerija xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="galerija.xsd">
+<gal:galerija xmlns:gal="http://monetica.hr/galerija" xmlns:rad="http://monetica.hr/radionice" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://monetica.hr/galerija galerija.xsd                                   http://monetica.hr/radionice radionice.xsd">
 
-    <djelo id="1">
-        <naslov>Nikol</naslov>
-        <autor>Marija Kovač</autor>
-        <tehnika>Ulje na platnu</tehnika>
-        <godina>2023</godina>
-        <dimenzije>80 × 60 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/djevojka.jfif</slika>
-        <opis>Idiličan prizor djevojčice na plaži. </opis>
-    </djelo>
+    <!-- ─── Radovi Društva Monetica ─── -->
 
-    <djelo id="2">
-        <naslov>Rapsodija u zelenom</naslov>
-        <autor>Rade Grahovac</autor>
-        <tehnika>Akril</tehnika>
-        <godina>2022</godina>
-        <dimenzije>70 × 50 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/rapsodija.jpg</slika>
-        <opis>Svježi zavičaj.</opis>
-    </djelo>
+    <gal:djelo id="1">
+        <gal:naslov>Nikol</gal:naslov>
+        <gal:autor>Marija Kovač</gal:autor>
+        <gal:tehnika>Ulje na platnu</gal:tehnika>
+        <gal:godina>2023</gal:godina>
+        <gal:dimenzije>80 × 60 cm</gal:dimenzije>
+        <gal:kategorija>Slikarstvo</gal:kategorija>
+        <gal:slika>images/djela/djevojka.jfif</gal:slika>
+        <gal:opis>Idiličan prizor djevojčice na plaži.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="3">
-        <naslov>Jaganjac</naslov>
-        <autor>Valentina Ćurković</autor>
-        <tehnika>Grafitna olovka</tehnika>
-        <godina>2025</godina>
-        <dimenzije>A3</dimenzije>
-        <kategorija>Crtež</kategorija>
-        <slika>/monetica/images/djela/isus.jpg</slika>
-        <opis>Portret Isusa Krista dok nosi križ. </opis>
-    </djelo>
+    
 
-    <djelo id="4">
-        <naslov>Konec</naslov>
-        <autor>Jovica Durdev</autor>
-        <tehnika>Akril na platnu</tehnika>
-        <godina>2024</godina>
-        <dimenzije> 40 × 60 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/konec.jpg</slika>
-        <opis>Bogat zalazak Sunca nad jezerom.</opis>
-    </djelo>
+    <gal:djelo id="3">
+        <gal:naslov>Jaganjac</gal:naslov>
+        <gal:autor>Valentina Ćurković</gal:autor>
+        <gal:tehnika>Grafitna olovka</gal:tehnika>
+        <gal:godina>2025</gal:godina>
+        <gal:dimenzije>A3</gal:dimenzije>
+        <gal:kategorija>Crtež</gal:kategorija>
+        <gal:slika>images/djela/isus.jpg</gal:slika>
+        <gal:opis>Portret Isusa Krista dok nosi križ.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="5">
-        <naslov>Plov u suton</naslov>
-        <autor>Luka Tomić</autor>
-        <tehnika>Akril na platnu</tehnika>
-        <godina>2023</godina>
-        <dimenzije>40 × 60 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/suton.jpg</slika>
-        <opis>Plov brodova kroz sutonske valove.</opis>
-    </djelo>
+    <gal:djelo id="4">
+        <gal:naslov>Konec</gal:naslov>
+        <gal:autor>Jovica Durdev</gal:autor>
+        <gal:tehnika>Akril na platnu</gal:tehnika>
+        <gal:godina>2024</gal:godina>
+        <gal:dimenzije>40 × 60 cm</gal:dimenzije>
+        <gal:kategorija>Slikarstvo</gal:kategorija>
+        <gal:slika>images/djela/konec.jpg</gal:slika>
+        <gal:opis>Bogat zalazak Sunca nad jezerom.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="6">
-        <naslov>Miris prirode</naslov>
-        <autor>Ana Blažević</autor>
-        <tehnika>Ulje na platnu</tehnika>
-        <godina>2023</godina>
-        <dimenzije>70 × 90 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/priroda.jfif</slika>
-        <opis>Prikaz mirnog proljetnog dana na seoskom imanju.</opis>
-    </djelo>
+    <gal:djelo id="5">
+        <gal:naslov>Plov u suton</gal:naslov>
+        <gal:autor>Luka Tomić</gal:autor>
+        <gal:tehnika>Akril na platnu</gal:tehnika>
+        <gal:godina>2023</gal:godina>
+        <gal:dimenzije>40 × 60 cm</gal:dimenzije>
+        <gal:kategorija>Slikarstvo</gal:kategorija>
+        <gal:slika>images/djela/suton.jpg</gal:slika>
+        <gal:opis>Plov brodova kroz sutonske valove.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="7">
-        <naslov>Cveteki</naslov>
-        <autor>Marko Jurić</autor>
-        <tehnika>Ulje na platnu</tehnika>
-        <godina>2021</godina>
-        <dimenzije>35 × 60 cm</dimenzije>
-        <kategorija>Slikarstvo</kategorija>
-        <slika>/monetica/images/djela/vaza.jfif</slika>
-        <opis>Plava vaza obasjana prirodnim svijetlom s prozora.</opis>
-    </djelo>
+    <gal:djelo id="6">
+        <gal:naslov>Miris prirode</gal:naslov>
+        <gal:autor>Ana Blažević</gal:autor>
+        <gal:tehnika>Ulje na platnu</gal:tehnika>
+        <gal:godina>2023</gal:godina>
+        <gal:dimenzije>70 × 90 cm</gal:dimenzije>
+        <gal:kategorija>Slikarstvo</gal:kategorija>
+        <gal:slika>images/djela/priroda.jfif</gal:slika>
+        <gal:opis>Prikaz mirnog proljetnog dana na seoskom imanju.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="8">
-        <naslov>Neda Arnerić</naslov>
-        <autor>Petar Dimitrijević</autor>
-        <tehnika>Grafitna olovka</tehnika>
-        <godina>2026</godina>
-        <dimenzije>A4</dimenzije>
-        <kategorija>Crtež</kategorija>
-        <slika>/monetica/images/djela/neda.jpg</slika>
-        <opis>Portret poluprofila iz gornjeg rakursa.</opis>
-    </djelo>
+    <gal:djelo id="7">
+        <gal:naslov>Cveteki</gal:naslov>
+        <gal:autor>Marko Jurić</gal:autor>
+        <gal:tehnika>Ulje na platnu</gal:tehnika>
+        <gal:godina>2021</gal:godina>
+        <gal:dimenzije>35 × 60 cm</gal:dimenzije>
+        <gal:kategorija>Slikarstvo</gal:kategorija>
+        <gal:slika>images/djela/vaza.jfif</gal:slika>
+        <gal:opis>Plava vaza obasjana prirodnim svijetlom s prozora.</gal:opis>
+    </gal:djelo>
 
-    <djelo id="9">
-        <naslov>Zagrebačkim ulicama</naslov>
-        <autor>Nika Gatić</autor>
-        <tehnika>Fotografija</tehnika>
-        <godina>2022</godina>
-        <dimenzije></dimenzije>
-        <kategorija>Fotografija</kategorija>
-        <slika>/monetica/images/djela/zg.jpg</slika>
-        <opis>Fotografija usamljene zagrebačke ulice.</opis>
-    </djelo>
+    <gal:djelo id="8">
+        <gal:naslov>Neda Arnerić</gal:naslov>
+        <gal:autor>Petar Dimitrijević</gal:autor>
+        <gal:tehnika>Grafitna olovka</gal:tehnika>
+        <gal:godina>2026</gal:godina>
+        <gal:dimenzije>A4</gal:dimenzije>
+        <gal:kategorija>Crtež</gal:kategorija>
+        <gal:slika>images/djela/neda.jpg</gal:slika>
+        <gal:opis>Portret poluprofila iz gornjeg rakursa.</gal:opis>
+    </gal:djelo>
 
-</galerija>
+    <gal:djelo id="9">
+        <gal:naslov>Zagrebačkim ulicama</gal:naslov>
+        <gal:autor>Nika Gatić</gal:autor>
+        <gal:tehnika>Fotografija</gal:tehnika>
+        <gal:godina>2022</gal:godina>
+        <gal:dimenzije/>
+        <gal:kategorija>Fotografija</gal:kategorija>
+        <gal:slika>images/djela/zg.jpg</gal:slika>
+        <gal:opis>Fotografija usamljene zagrebačke ulice.</gal:opis>
+    </gal:djelo>
+
+    <!-- ─── Radionice i izložbe ─── -->
+
+    <rad:radionica id="r1">
+        <rad:naslov>Kolaž</rad:naslov>
+        <rad:opis>Dvodnevna radionica stvaranja kreativnih kompozicija od kolaža. Idealna za mlađe uzraste.</rad:opis>
+        <rad:slika>images/radionice/kolaz.jpg</rad:slika>
+    </rad:radionica>
+
+    <rad:radionica id="r2">
+        <rad:naslov>Oblikovanje gline</rad:naslov>
+        <rad:opis>Ubrzani tečaj izrade glinenog posuđa.</rad:opis>
+        <rad:slika>images/radionice/glina.jpg</rad:slika>
+    </rad:radionica>
+
+    <rad:radionica id="r3">
+        <rad:naslov>Glow in the dark</rad:naslov>
+        <rad:opis>Nesvakidašnja radionica slikanja po platnu i tijelu pomoću boja koje svijetle u mraku.</rad:opis>
+        <rad:slika>images/radionice/glow_paint.jpg</rad:slika>
+    </rad:radionica>
+
+    <rad:radionica id="r4">
+        <rad:naslov>Out Draw</rad:naslov>
+        <rad:opis>Opušteno crtanje na otvorenom uz dobru ekipu.</rad:opis>
+        <rad:slika>images/radionice/crtanje_na_otvorenom.jpg</rad:slika>
+    </rad:radionica>
+
+    <rad:radionica id="r5">
+        <rad:naslov>Face paint</rad:naslov>
+        <rad:opis>Kreativna radionica slikanja po licu.</rad:opis>
+        <rad:slika>images/radionice/face_paint.jpg</rad:slika>
+    </rad:radionica>
+
+    <rad:radionica id="r6">
+        <rad:naslov>Garden paint</rad:naslov>
+        <rad:opis>Slikanje pejzaža uz stvarnu referencu, slikanje u vrtu.</rad:opis>
+        <rad:slika>images/radionice/slikanje_u_vrtu.jpg</rad:slika>
+    </rad:radionica>
+
+</gal:galerija>

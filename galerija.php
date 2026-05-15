@@ -1,149 +1,289 @@
-﻿<?php
+<?php
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
 
 $naslovStranice = 'Galerija';
 
-$svaDjela    = dohvatiDjelaXML();
-$kategorije  = dohvatiKategorijeXML();
+// ─── 1. Radovi Monetice iz XML-a ───
+$svaDjela = dohvatiDjelaXML();
+
+// ─── 2. Radionice i izložbe iz XML-a (rad: namespace) ───
+$radioniceSlike = dohvatiRadioniceXML();
+
+// ─── 3. Javna remek-djela (Art Institute of Chicago API) ───
+function dohvatiSvjetskaDjelaGalerija($max = 9) {
+    $url = "https://api.artic.edu/api/v1/artworks?page=1&limit={$max}&fields=id,title,artist_display,date_display,medium_display,image_id";
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 12,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (compatible; Monetica/1.0)',
+            CURLOPT_HTTPHEADER     => ['Accept: application/json'],
+            CURLOPT_ENCODING       => 'gzip, deflate',
+        ]);
+        $odgovor = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $ctx = stream_context_create(['http' => ['timeout' => 12, 'user_agent' => 'Mozilla/5.0 (compatible; Monetica/1.0)']]);
+        $odgovor = @file_get_contents($url, false, $ctx);
+    }
+
+    if (!$odgovor) return [];
+    $podaci = json_decode($odgovor, true);
+    if (!isset($podaci['data'])) return [];
+
+    $djela = [];
+    foreach ($podaci['data'] as $d) {
+        if (!$d['image_id']) continue;
+        $djela[] = [
+            'id'      => (string)$d['id'],
+            'naslov'  => $d['title'] ?? 'Nepoznato djelo',
+            'autor'   => $d['artist_display'] ?? 'Nepoznati autor',
+            'godina'  => $d['date_display'] ?? '',
+            'tehnika' => $d['medium_display'] ?? '',
+            'slika'   => "https://www.artic.edu/iiif/2/{$d['image_id']}/full/400,/0/default.jpg",
+        ];
+    }
+    return $djela;
+}
+
+$svjetskaDjela = dohvatiSvjetskaDjelaGalerija();
 
 include 'includes/header.php';
 ?>
+
 <div class="o-nama-hero">
     <div class="kontejner">
         <h1>Galerija</h1>
-        <p>Pregledajte radove naših članova i remek-djela iz svjetskih zbirki</p>
+        <p>Radovi naših članova, fotografije s radionica i izložbi te remek-djela iz svjetskih zbirki</p>
     </div>
 </div>
 
-<section class="sekcija" style="padding-bottom: 0;">
+
+<!-- ═══════════════════════════════════════════
+     KAROZEL 1 — Radovi Društva Monetica (XML)
+     ═══════════════════════════════════════════ -->
+<section class="sekcija animiraj">
     <div class="kontejner">
-        <div class="pretraga-okvir">
-            <div class="pretraga-red">
-                <div class="pretraga-unos" style="flex: 2;">
-                    <label for="pretragaUnos">
-                        <i class="fa fa-search"></i> Pretraži
-                    </label>
-                    <input type="text"
-                           id="pretragaUnos"
-                           class="unos-polje"
-                           placeholder="Pretraži po naslovu, autoru ili kategoriji...">
-                </div>
 
-                <div class="pretraga-unos">
-                    <label><i class="fa fa-filter"></i> Kategorija</label>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 5px;">
-                        <button class="filter-gumb btn btn-primarni aktivan"
-                                data-kategorija="sve"
-                                style="padding: 8px 15px; font-size: 0.8rem;">
-                            Sve
-                        </button>
-                        <?php foreach ($kategorije as $kat): ?>
-                        <button class="filter-gumb btn btn-akcent"
-                                data-kategorija="<?= ocisti($kat) ?>"
-                                style="padding: 8px 15px; font-size: 0.8rem; background: transparent; color: var(--boja-primarni); border-color: var(--boja-siva-sv);">
-                            <?= ocisti($kat) ?>
-                        </button>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="sekcija" style="padding-top: 30px;">
-    <div class="kontejner">
-        <h2 class="naslov-sekcija lijevo">
-            Radovi Društva Monetica
-            <small style="font-size: 0.5em; font-weight: 400; color: var(--boja-siva); font-family: var(--font-tekst);">
-                <i class="fa fa-file-code"></i> Izvor: lokalna zbirka
-            </small>
-        </h2>
-
-        <p id="bezRezultata" style="display:none;" class="poruka-info">
-            Nema pronađenih radova za uneseni pojam.
+        <h2 class="naslov-sekcija lijevo" style="padding-left:55px;">
+            Radovi Društva Monetica</h2>
+        <p style="color:var(--boja-siva); margin-bottom:36px; max-width:700px; font-size:0.95rem; line-height:1.8; padding-left:55px;">
+            Originalna umjetnička djela članova Društva Monetica — slike, grafike, skulpture i crteži
+            nastali kroz gotovo četiri desetljeća rada. Kliknite na djelo za uvećani prikaz s detaljima
+            o tehnici i autoru.
         </p>
 
-        <div class="galerija-mreza">
-            <?php foreach ($svaDjela as $djelo): ?>
-            <div class="galerija-kartica"
-                 data-naslov="<?= ocisti($djelo['naslov']) ?>"
-                 data-autor="<?= ocisti($djelo['autor']) ?>"
-                 data-kategorija="<?= ocisti($djelo['kategorija']) ?>">
+        <?php if (empty($svaDjela)): ?>
+            <div class="poruka-info">
+                Galerija trenutno nema unesenih radova.
+                <?php if (jeAdmin()): ?><a href="<?= BASE_URL ?>/admin/dodaj-djelo.php">Dodaj djelo</a>.<?php endif; ?>
+            </div>
+        <?php else:
+            $kategorije = array_values(array_unique(array_column($svaDjela, 'kategorija')));
+            sort($kategorije);
+        ?>
+        <div id="filtriDjela" class="filter-traka" style="padding-left:55px;">
+            <button class="filter-gumb aktivan" data-kategorija="sve">Sve</button>
+            <?php foreach ($kategorije as $kat): ?>
+            <button class="filter-gumb" data-kategorija="<?= ocisti($kat) ?>"><?= ocisti($kat) ?></button>
+            <?php endforeach; ?>
+        </div>
 
-                <div class="slika-omotac">
-                    <span class="kategorija-oznaka"><?= ocisti($djelo['kategorija']) ?></span>
-
-                    <img src="<?= ocisti($djelo['slika']) ?>"
-                         alt="<?= ocisti($djelo['naslov']) ?>"
-                         loading="lazy"
-                         class="lokalna-slika-klik"
+        <div id="karozelDjela" class="carousel-omotac" style="padding:20px 55px 32px; position:relative;">
+            <button class="carousel-gumb lijevi" aria-label="Prethodni"><i class="fa fa-chevron-left"></i></button>
+            <div class="carousel-traka">
+                <?php foreach ($svaDjela as $djelo):
+                    $jeOmiljeno = jePrijavljen() ? jeUFavoritima($pdo, $_SESSION['korisnik_id'], $djelo['id'], 'xml') : false;
+                ?>
+                <div class="carousel-item-custom" data-kategorija="<?= ocisti($djelo['kategorija']) ?>">
+                    <div class="galerija-kartica"
                          data-naslov="<?= ocisti($djelo['naslov']) ?>"
                          data-autor="<?= ocisti($djelo['autor']) ?>"
-                         data-godina="<?= ocisti($djelo['godina']) ?>"
-                         data-tehnika="<?= ocisti($djelo['tehnika']) ?>"
-                         data-dimenzije="<?= ocisti($djelo['dimenzije'] ?? '') ?>"
-                         data-opis="<?= ocisti($djelo['opis'] ?? '') ?>"
-                         style="cursor: zoom-in;"
-                         onerror="this.src='https://via.placeholder.com/400x300?text=Nema+slike'">
+                         data-kategorija="<?= ocisti($djelo['kategorija']) ?>">
+                        <div class="slika-omotac">
+                            <span class="kategorija-oznaka"><?= ocisti($djelo['kategorija']) ?></span>
 
-                    <div class="kartica-overlay">
-                        <h4><?= ocisti($djelo['naslov']) ?></h4>
-                        <p><?= ocisti($djelo['autor']) ?> · <?= ocisti($djelo['godina']) ?></p>
-                        <p><em><?= ocisti($djelo['tehnika']) ?></em></p>
-                        <?php if ($djelo['dimenzije']): ?>
-                        <p><?= ocisti($djelo['dimenzije']) ?></p>
-                        <?php endif; ?>
-                        <?php if ($djelo['opis']): ?>
-                        <p style="font-size:0.8rem; margin-top:8px;"><?= skratiTekst(ocisti($djelo['opis']), 100) ?></p>
-                        <?php endif; ?>
+                            <img src="<?= ocisti(urlSlike($djelo['slika'])) ?>"
+                                 alt="<?= ocisti($djelo['naslov']) ?>"
+                                 loading="lazy"
+                                 onerror="this.src='https://via.placeholder.com/400x300?text=Nema+slike'">
+
+                            <div class="kartica-overlay">
+                                <p><em><?= ocisti($djelo['tehnika']) ?></em> · <?= ocisti($djelo['godina']) ?></p>
+                                <?php if ($djelo['dimenzije']): ?>
+                                <p style="font-size:0.78rem;"><?= ocisti($djelo['dimenzije']) ?></p>
+                                <?php endif; ?>
+                                <?php if ($djelo['opis']): ?>
+                                <p style="font-size:0.78rem; margin-top:4px;"><?= ocisti($djelo['opis']) ?></p>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (jePrijavljen()): ?>
+                                <button class="btn-favorit <?= $jeOmiljeno ? 'aktivan' : '' ?>"
+                                        data-djelo-id="<?= ocisti($djelo['id']) ?>"
+                                        data-izvor="xml"
+                                        title="<?= $jeOmiljeno ? 'Ukloni iz favorita' : 'Dodaj u favorite' ?>">
+                                    <i class="fa fa-heart"></i>
+                                </button>
+                            <?php else: ?>
+                                <a href="<?= BASE_URL ?>/prijava.php" class="btn-favorit" title="Prijavi se za favorite">
+                                    <i class="fa fa-heart"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                        <div class="info">
+                            <h4><?= ocisti($djelo['naslov']) ?></h4>
+                            <span><?= ocisti($djelo['autor']) ?></span>
+                        </div>
                     </div>
-
-                    <?php if (jePrijavljen()): ?>
-                        <?php $jeOmiljeno = jeUFavoritima($pdo, $_SESSION['korisnik_id'], $djelo['id'], 'xml'); ?>
-                        <button class="btn-favorit <?= $jeOmiljeno ? 'aktivan' : '' ?>"
-                                data-djelo-id="<?= ocisti($djelo['id']) ?>"
-                                data-izvor="xml"
-                                title="<?= $jeOmiljeno ? 'Ukloni iz favorita' : 'Dodaj u favorite' ?>">
-                            <i class="fa fa-heart"></i>
-                        </button>
-                    <?php else: ?>
-                        <a href="<?= BASE_URL ?>/prijava.php" class="btn-favorit" title="Prijavi se za favorite">
-                            <i class="fa fa-heart"></i>
-                        </a>
-                    <?php endif; ?>
                 </div>
-
-                <div class="info">
-                    <h4><?= ocisti($djelo['naslov']) ?></h4>
-                    <span><?= ocisti($djelo['autor']) ?></span>
-                </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
+            <button class="carousel-gumb desni" aria-label="Sljedeći"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        <p style="text-align:right; margin-top:16px; font-size:0.82rem; color:var(--boja-siva);">
+            <?= count($svaDjela) ?> <?= count($svaDjela) === 1 ? 'djelo' : 'djela' ?> u zbirci
+            <?php if (jePrijavljen()): ?>·
+                <a href="<?= BASE_URL ?>/favoriti.php" style="color:var(--boja-akcent);">
+                    <i class="fa fa-heart"></i> Moji favoriti
+                </a>
+            <?php endif; ?>
+        </p>
+        <?php endif; ?>
+
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     KAROZEL 2 — Radionice i izložbe (foto arhiv)
+     ═══════════════════════════════════════════ -->
+<section class="sekcija sekcija-siva animiraj slide-lijevo">
+    <div class="kontejner">
+
+        <h2 class="naslov-sekcija lijevo" style="padding-left:55px;">
+            Radionice i izložbe
+        </h2>
+        <p style="color:var(--boja-siva); margin-bottom:36px; max-width:700px; font-size:0.95rem; line-height:1.8; padding-left:55px;">
+            Fotografije s radionica, tečajeva i izložbi Društva Monetica. Svake godine organiziramo
+            više od 15 programa za sve razine znanja i dobi — od dječjih ljetnih kampova do naprednih
+            majstorskih tečajeva s priznatim hrvatskim i međunarodnim umjetnicima.
+        </p>
+
+        <div class="carousel-omotac" style="padding:20px 55px 32px; position:relative;">
+            <button class="carousel-gumb lijevi" aria-label="Prethodni"><i class="fa fa-chevron-left"></i></button>
+            <div class="carousel-traka">
+                <?php foreach ($radioniceSlike as $foto): ?>
+                <div class="carousel-item-custom">
+                    <div class="galerija-kartica">
+                        <div class="slika-omotac">
+                            <img src="<?= ocisti($foto['slika']) ?>"
+                                 alt="<?= ocisti($foto['naslov']) ?>"
+                                 loading="lazy"
+                                 onerror="this.src='https://images.unsplash.com/photo-1460627390041-532a28402358?w=600&q=80'">
+
+                            <div class="kartica-overlay">
+                                <p style="font-size:0.82rem;"><?= ocisti($foto['opis']) ?></p>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <h4><?= ocisti($foto['naslov']) ?></h4>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button class="carousel-gumb desni" aria-label="Sljedeći"><i class="fa fa-chevron-right"></i></button>
         </div>
     </div>
 </section>
 
-<div id="lightboxModal" class="lightbox-pozadina" style="display:none;" role="dialog" aria-modal="true" aria-label="Uvećana slika djela">
-    <div class="lightbox-sadrzaj">
-        <button class="lightbox-zatvori" id="lightboxZatvori" aria-label="Zatvori">&times;</button>
-        <div class="lightbox-unutarnji">
-            <div class="lightbox-slika-omotac">
-                <img id="lightboxSlika" src="" alt="" class="lightbox-slika">
+
+<!-- ═══════════════════════════════════════════
+     KAROZEL 3 — Javna remek-djela (API)
+     ═══════════════════════════════════════════ -->
+<section class="sekcija animiraj slide-desno">
+    <div class="kontejner">
+
+        <h2 class="naslov-sekcija lijevo" style="padding-left:55px;">
+            Svjetska remek-djela
+            <small style="font-size:0.5em; font-weight:400; color:var(--boja-siva); font-family:var(--font-tekst);">
+                <i class="fa fa-globe"></i> Art Institute of Chicago
+            </small>
+        </h2>
+        <p style="color:var(--boja-siva); margin-bottom:36px; max-width:700px; font-size:0.95rem; line-height:1.8; padding-left:55px;">
+            Odabrana remek-djela iz javne zbirke Art Institute of Chicago — jedne od najvećih i
+            najuglednijih umjetničkih institucija na svijetu s više od 300.000 radova iz 5.000 godina
+            ljudske civilizacije. Zbirka je slobodna za korištenje i istraživanje.
+        </p>
+
+        <?php if (empty($svjetskaDjela)): ?>
+            <div class="poruka-info">
+                <i class="fa fa-exclamation-circle"></i>
+                Vanjska zbirka trenutno nije dostupna. Provjerite internetsku vezu.
             </div>
-            <div class="lightbox-info">
-                <h3 id="lightboxNaslov"></h3>
-                <p id="lightboxAutor" class="lightbox-autor"></p>
-                <p id="lightboxGodina" class="lightbox-meta"></p>
-                <p id="lightboxTehnika" class="lightbox-meta lightbox-italic"></p>
-                <p id="lightboxDimenzije" class="lightbox-meta"></p>
-                <p id="lightboxOpis" class="lightbox-opis"></p>
+        <?php else: ?>
+        <div class="carousel-omotac" style="padding:20px 55px 32px; position:relative;">
+            <button class="carousel-gumb lijevi" aria-label="Prethodni"><i class="fa fa-chevron-left"></i></button>
+            <div class="carousel-traka">
+                <?php foreach ($svjetskaDjela as $djelo):
+                    $jeOmiljeno = jePrijavljen() ? jeUFavoritima($pdo, $_SESSION['korisnik_id'], $djelo['id'], 'api') : false;
+                ?>
+                <div class="carousel-item-custom">
+                    <div class="galerija-kartica">
+                        <div class="slika-omotac">
+                            <img src="<?= ocisti($djelo['slika']) ?>"
+                                 alt="<?= ocisti($djelo['naslov']) ?>"
+                                 loading="lazy"
+                                 onerror="this.src='https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=600&q=80'">
+
+                            <div class="kartica-overlay">
+                                <h4><?= ocisti($djelo['naslov']) ?></h4>
+                                <p style="font-size:0.8rem;"><?= skratiTekst(ocisti($djelo['autor']), 60) ?></p>
+                                <?php if ($djelo['godina']): ?>
+                                    <p><?= ocisti($djelo['godina']) ?></p>
+                                <?php endif; ?>
+                                <?php if ($djelo['tehnika']): ?>
+                                    <p style="font-size:0.75rem; font-style:italic;"><?= skratiTekst(ocisti($djelo['tehnika']), 50) ?></p>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (jePrijavljen()): ?>
+                                <button class="btn-favorit <?= $jeOmiljeno ? 'aktivan' : '' ?>"
+                                        data-djelo-id="<?= ocisti($djelo['id']) ?>"
+                                        data-izvor="api"
+                                        title="<?= $jeOmiljeno ? 'Ukloni iz favorita' : 'Dodaj u favorite' ?>">
+                                    <i class="fa fa-heart"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        <div class="info">
+                            <h4 style="font-size:0.9rem;"><?= skratiTekst(ocisti($djelo['naslov']), 40) ?></h4>
+                            <span><?= ocisti($djelo['godina']) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
             </div>
+            <button class="carousel-gumb desni" aria-label="Sljedeći"><i class="fa fa-chevron-right"></i></button>
         </div>
+        <p style="text-align:center; margin-top:20px; font-size:0.8rem; color:var(--boja-siva);">
+            Podaci preuzeti iz javne zbirke
+            <a href="https://www.artic.edu/open-access/public-api" target="_blank" rel="noopener">
+                Art Institute of Chicago
+            </a> · Besplatno i otvoreno za javnost.
+        </p>
+        <?php endif; ?>
+
     </div>
-</div>
+</section>
+
 
 <?php include 'includes/footer.php'; ?>

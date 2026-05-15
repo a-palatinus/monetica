@@ -1,12 +1,39 @@
-﻿<?php
+<?php
+// =============================================
+// ADMIN — Upravljanje korisnicima
+// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
 
 zahtijevajAdmina();
 
-$naslovStranice = 'Korisnici';
+$naslovStranice = 'Upravljanje korisnicima';
+$poruka = '';
 
+// ─── Promjena uloge korisnika ───
+if (isset($_GET['uloga']) && isset($_GET['id'])) {
+    $novaUloga = $_GET['uloga'] === 'admin' ? 'admin' : 'korisnik';
+    $korisnikId = (int)$_GET['id'];
+
+    // Ne možeš promijeniti svoju vlastitu ulogu
+    if ($korisnikId !== $_SESSION['korisnik_id']) {
+        $pdo->prepare("UPDATE korisnici SET uloga = ? WHERE id = ?")->execute([$novaUloga, $korisnikId]);
+        $poruka = 'Uloga korisnika je promijenjena.';
+    }
+}
+
+// ─── Brisanje korisnika ───
+if (isset($_GET['brisi'])) {
+    $korisnikId = (int)$_GET['brisi'];
+    // Ne možeš obrisati sebe
+    if ($korisnikId !== $_SESSION['korisnik_id']) {
+        $pdo->prepare("DELETE FROM korisnici WHERE id = ?")->execute([$korisnikId]);
+        $poruka = 'Korisnik je obrisan.';
+    }
+}
+
+// Dohvati sve korisnike
 $korisnici = $pdo->query("SELECT * FROM korisnici ORDER BY datum_registracije DESC")->fetchAll();
 
 include '../includes/header.php';
@@ -15,6 +42,7 @@ include '../includes/header.php';
 <section class="sekcija" style="padding-top: 40px;">
     <div class="kontejner">
 
+        <!-- Admin navigacija -->
         <div class="admin-nav">
             <a href="<?= BASE_URL ?>/admin/index.php"><i class="fa fa-tachometer-alt"></i> Nadzorna ploča</a>
             <a href="<?= BASE_URL ?>/admin/vijesti.php"><i class="fa fa-newspaper"></i> Vijesti</a>
@@ -26,10 +54,9 @@ include '../includes/header.php';
 
         <h2 class="naslov-sekcija lijevo">Korisnici (<?= count($korisnici) ?>)</h2>
 
-        <div class="poruka-info" style="margin-bottom: 20px;">
-            <i class="fa fa-info-circle"></i>
-            Upravljanje ulogama i brisanje korisnika bit će dodano u idućoj fazi.
-        </div>
+        <?php if ($poruka): ?>
+            <div class="poruka-uspjeh"><i class="fa fa-check-circle"></i> <?= ocisti($poruka) ?></div>
+        <?php endif; ?>
 
         <table class="admin-tablica">
             <thead>
@@ -39,25 +66,54 @@ include '../includes/header.php';
                     <th>E-mail</th>
                     <th>Uloga</th>
                     <th>Registriran</th>
+                    <th>Radnje</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($korisnici as $k): ?>
                 <tr>
-                    <td><?= $k['id'] ?></td>
-                    <td>
+                    <td data-label="#"><?= $k['id'] ?></td>
+                    <td data-label="Ime">
                         <?= ocisti($k['ime'] . ' ' . $k['prezime']) ?>
                         <?php if ($k['id'] === $_SESSION['korisnik_id']): ?>
                             <small style="color: var(--boja-siva);">(ti)</small>
                         <?php endif; ?>
                     </td>
-                    <td><?= ocisti($k['email']) ?></td>
-                    <td>
+                    <td data-label="E-mail"><?= ocisti($k['email']) ?></td>
+                    <td data-label="Uloga">
                         <span class="oznaka oznaka-<?= $k['uloga'] ?>">
                             <?= $k['uloga'] === 'admin' ? 'Admin' : 'Korisnik' ?>
                         </span>
                     </td>
-                    <td><?= date('d.m.Y', strtotime($k['datum_registracije'])) ?></td>
+                    <td data-label="Registriran"><?= date('d.m.Y', strtotime($k['datum_registracije'])) ?></td>
+                    <td data-label="">
+                        <?php if ($k['id'] !== $_SESSION['korisnik_id']): ?>
+                            <!-- Promjena uloge -->
+                            <?php if ($k['uloga'] === 'korisnik'): ?>
+                                <a href="?uloga=admin&id=<?= $k['id'] ?>"
+                                   style="color: #f39c12; margin-right: 10px;"
+                                   title="Postavi za admina">
+                                    <i class="fa fa-crown"></i> Admin
+                                </a>
+                            <?php else: ?>
+                                <a href="?uloga=korisnik&id=<?= $k['id'] ?>"
+                                   style="color: var(--boja-siva); margin-right: 10px;"
+                                   title="Smanji na korisnika">
+                                    <i class="fa fa-user-minus"></i> Korisnik
+                                </a>
+                            <?php endif; ?>
+
+                            <!-- Brisanje -->
+                            <a href="?brisi=<?= $k['id'] ?>"
+                               class="btn-brisi"
+                               data-naziv="<?= ocisti($k['ime'] . ' ' . $k['prezime']) ?>"
+                               style="color: #e74c3c; text-decoration: none;">
+                                <i class="fa fa-trash"></i> Briši
+                            </a>
+                        <?php else: ?>
+                            <span style="color: var(--boja-siva); font-size: 0.85rem;">—</span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -1,17 +1,24 @@
+// =============================================
+// monetica — glavni javascript
+// =============================================
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    // dropdown nav
+    // ─── 0. dropdown — hover s odgodom + klik za trajni prikaz ───
     document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
         const link = dropdown.querySelector('.nav-link');
 
         if (link) {
             link.addEventListener('click', function (e) {
+                // sprečava navigaciju na href="#"
                 if (link.getAttribute('href') === '#') e.preventDefault();
 
                 const jeOtvoren = dropdown.classList.contains('otvoren');
+                // zatvori sve ostale otvorene dropdowne
                 document.querySelectorAll('.nav-dropdown.otvoren').forEach(function (d) {
                     d.classList.remove('otvoren');
                 });
+                // toggle ovog dropdowna
                 if (!jeOtvoren) dropdown.classList.add('otvoren');
             });
         }
@@ -27,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // mob nav
+    // ─── 1. hamburger izbornik (mobilna navigacija) ───
     const hamburger = document.getElementById('hamburger');
     const navLista  = document.getElementById('navLista');
 
@@ -37,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
             navLista.classList.toggle('otvoreno');
         });
 
+        // zatvori izbornik klikom izvan njega
         document.addEventListener('click', function (e) {
             if (!hamburger.contains(e.target) && !navLista.contains(e.target)) {
                 hamburger.classList.remove('aktivan');
@@ -46,10 +54,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // scroll navigacije
+    // ─── 2. navigacija — promjena stila pri scrollu ───
     const nav = document.getElementById('navigacija');
     if (nav) {
         window.addEventListener('scroll', function () {
+            // dodaj sjenu kad korisnik scrolla više od 50px
             if (window.scrollY > 50) {
                 nav.style.boxShadow = '0 4px 24px rgba(0,0,0,0.1)';
                 nav.style.borderBottomColor = 'transparent';
@@ -61,52 +70,74 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // galerija
+    // ─── 3. karusel galerije — beskonačno kružno kretanje (DOM rotacija) ───
     document.querySelectorAll('.carousel-omotac').forEach(function (omotac) {
-        const traka   = omotac.querySelector('.carousel-traka');
-        const lijevi  = omotac.querySelector('.carousel-gumb.lijevi');
-        const desni   = omotac.querySelector('.carousel-gumb.desni');
+        var traka  = omotac.querySelector('.carousel-traka');
+        var lijevi = omotac.querySelector('.carousel-gumb.lijevi');
+        var desni  = omotac.querySelector('.carousel-gumb.desni');
 
-        if (!traka) return;
+        if (!traka || traka.querySelectorAll('.carousel-item-custom').length < 2) return;
 
-        let pozicija = 0; 
+        var radi = false; // blokira novi klik dok traje animacija
 
-        function dobaviBrVidljivih() {
-            if (window.innerWidth <= 768) return 1;
-            if (window.innerWidth <= 992) return 2;
-            return 3;
+        function slot() {
+            // sirina jednog mjesta — uvijek ista za sve stavke
+            var s = traka.querySelectorAll('.carousel-item-custom');
+            return s[1].offsetLeft - s[0].offsetLeft;
         }
 
-        function ukupnoStavki() {
-            return traka.querySelectorAll('.carousel-item-custom').length;
+        function postaviTrenutak(px) {
+            // postavi transform bez animacije
+            traka.style.transition = 'none';
+            traka.style.transform  = 'translateX(' + px + 'px)';
+            void traka.offsetHeight; // reflow — prisili browser da primijeni prije vracanja tranzicije
+            traka.style.transition  = '';
         }
 
-        function pomakniCarousel() {
-            const vidljivo   = dobaviBrVidljivih();
-            const sirStavke  = traka.querySelector('.carousel-item-custom');
-            if (!sirStavke) return;
-            const pomak = (sirStavke.offsetWidth + 20) * pozicija;
-            traka.style.transform = `translateX(-${pomak}px)`;
-        }
-
+        // klik desno: klizi ulijevo, premjesti prvu stavku na kraj, resetiraj
         if (desni) {
             desni.addEventListener('click', function () {
-                const vidljivo = dobaviBrVidljivih();
-                const max = Math.max(0, ukupnoStavki() - vidljivo);
-                if (pozicija < max) { pozicija++; pomakniCarousel(); }
-            });
-        }
-        if (lijevi) {
-            lijevi.addEventListener('click', function () {
-                if (pozicija > 0) { pozicija--; pomakniCarousel(); }
+                if (radi) return;
+                radi = true;
+                traka.style.transform = 'translateX(' + (-slot()) + 'px)';
+                traka.addEventListener('transitionend', function handler(e) {
+                    if (e.propertyName !== 'transform') return;
+                    traka.removeEventListener('transitionend', handler);
+                    traka.appendChild(traka.querySelector('.carousel-item-custom'));
+                    postaviTrenutak(0);
+                    radi = false;
+                });
             });
         }
 
-        window.addEventListener('resize', function () { pozicija = 0; pomakniCarousel(); });
+        // klik lijevo: premjesti zadnju stavku na pocetak, postavi na -slot, klizi udesno na 0
+        if (lijevi) {
+            lijevi.addEventListener('click', function () {
+                if (radi) return;
+                radi = true;
+                var stavke = traka.querySelectorAll('.carousel-item-custom');
+                traka.insertBefore(stavke[stavke.length - 1], stavke[0]);
+                postaviTrenutak(-slot());
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        traka.style.transform = 'translateX(0)';
+                        traka.addEventListener('transitionend', function handler(e) {
+                            if (e.propertyName !== 'transform') return;
+                            traka.removeEventListener('transitionend', handler);
+                            radi = false;
+                        });
+                    });
+                });
+            });
+        }
+
+        window.addEventListener('resize', function () {
+            postaviTrenutak(0);
+        });
     });
 
 
-    // ajax dodavanje/uklanjanje favorita
+    // ─── 4. dodaj/ukloni iz favorita (bez refresha stranice) ───
     document.querySelectorAll('.btn-favorit').forEach(function (gumb) {
         gumb.addEventListener('click', function (e) {
             e.preventDefault();
@@ -115,7 +146,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const djeloId = gumb.dataset.djeloId;
             const izvor   = gumb.dataset.izvor;
 
-            fetch('/monetica/ajax/favorit.php', {
+            // slanje ajax zahtjeva na server
+            fetch(window.BASE_URL + '/ajax/favorit.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'djelo_id=' + encodeURIComponent(djeloId) +
@@ -123,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(function (odgovor) { return odgovor.json(); })
             .then(function (podaci) {
+                // ažuriraj izgled gumba prema odgovoru servera
                 if (podaci.status === 'dodan') {
                     gumb.classList.add('aktivan');
                     gumb.innerHTML = '<i class="fa fa-heart"></i>';
@@ -132,21 +165,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     gumb.innerHTML = '<i class="fa fa-heart"></i>';
                     gumb.title = 'Dodaj u favorite';
                 } else if (podaci.status === 'greska_prijava') {
-                    window.location.href = '/monetica/prijava.php?poruka=morate_se_prijaviti';
+                    // korisnik nije prijavljen — preusmjeri na prijavu
+                    window.location.href = window.BASE_URL + '/prijava.php?poruka=morate_se_prijaviti';
                 }
             })
             .catch(function () {
-                window.location.href = '/monetica/prijava.php';
+                // ako ajax ne radi, preusmjeri na stranicu prijave
+                window.location.href = window.BASE_URL + '/prijava.php';
             });
         });
     });
 
 
-    // live pretraga galerije
+    // ─── 5. live pretraga u galeriji ───
     const pretragaUnos = document.getElementById('pretragaUnos');
     if (pretragaUnos) {
         pretragaUnos.addEventListener('input', function () {
             const upit = this.value.toLowerCase();
+            // filtriraj kartice prema naslovu, autoru ili kategoriji
             document.querySelectorAll('.galerija-kartica').forEach(function (kartica) {
                 const naslov  = (kartica.dataset.naslov  || '').toLowerCase();
                 const autor   = (kartica.dataset.autor   || '').toLowerCase();
@@ -154,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const vidljiv = naslov.includes(upit) || autor.includes(upit) || kateg.includes(upit);
                 kartica.style.display = vidljiv ? '' : 'none';
             });
+
+            // prikaži poruku ako nema rezultata pretrage
             const prikaz = document.getElementById('bezRezultata');
             if (prikaz) {
                 const imaPrikazanih = [...document.querySelectorAll('.galerija-kartica')]
@@ -164,27 +202,57 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    //filter po kategoriji
-    document.querySelectorAll('.filter-gumb').forEach(function (gumb) {
-        gumb.addEventListener('click', function () {
-            document.querySelectorAll('.filter-gumb').forEach(g => g.classList.remove('aktivan'));
-            this.classList.add('aktivan');
+    // ─── 6. filter po kategoriji (Galerija — karozel) ───
+    const filtriDjela = document.getElementById('filtriDjela');
+    if (filtriDjela) {
+        const karozelDjela = document.getElementById('karozelDjela');
+        const filterTraka  = karozelDjela ? karozelDjela.querySelector('.carousel-traka') : null;
+        const btnLijevi    = karozelDjela ? karozelDjela.querySelector('.carousel-gumb.lijevi') : null;
+        const btnDesni     = karozelDjela ? karozelDjela.querySelector('.carousel-gumb.desni')  : null;
+        // pohrani sve stavke na init — ne mijenjaju se
+        const sveStavke = filterTraka
+            ? Array.from(filterTraka.querySelectorAll('.carousel-item-custom'))
+            : [];
 
-            const odabraKateg = this.dataset.kategorija;
+        filtriDjela.querySelectorAll('.filter-gumb').forEach(function (gumb) {
+            gumb.addEventListener('click', function () {
+                filtriDjela.querySelectorAll('.filter-gumb').forEach(g => g.classList.remove('aktivan'));
+                this.classList.add('aktivan');
 
-            document.querySelectorAll('.galerija-kartica').forEach(function (kartica) {
-                if (!odabraKateg || odabraKateg === 'sve') {
-                    kartica.style.display = '';
-                } else {
-                    const kateg = (kartica.dataset.kategorija || '').toLowerCase();
-                    kartica.style.display = kateg === odabraKateg.toLowerCase() ? '' : 'none';
-                }
+                const odabraKateg = this.dataset.kategorija;
+                if (!filterTraka) return;
+
+                // zamrzni poziciju odmah (bez tranzicije) prije DOM promjena
+                filterTraka.style.transition = 'none';
+                filterTraka.style.transform  = 'translateX(0)';
+                void filterTraka.offsetHeight;
+
+                // obnovi traku samo s odgovarajućim stavkama
+                while (filterTraka.firstChild) filterTraka.removeChild(filterTraka.firstChild);
+                sveStavke.forEach(function (stavka) {
+                    const kateg = (stavka.dataset.kategorija || '').toLowerCase();
+                    if (odabraKateg === 'sve' || kateg === odabraKateg.toLowerCase()) {
+                        filterTraka.appendChild(stavka);
+                    }
+                });
+
+                // resetiraj NAKON što browser obradi DOM promjene, pa vrati tranziciju
+                requestAnimationFrame(function () {
+                    filterTraka.style.transform = 'translateX(0)';
+                    void filterTraka.offsetHeight;
+                    filterTraka.style.transition = '';
+                });
+
+                // sakrij strelice kad svi radovi stanu u karozel (≤ 3 vidljiva slota)
+                var brStavki = filterTraka.querySelectorAll('.carousel-item-custom').length;
+                if (btnLijevi) btnLijevi.style.display = brStavki > 3 ? '' : 'none';
+                if (btnDesni)  btnDesni.style.display  = brStavki > 3 ? '' : 'none';
             });
         });
-    });
+    }
 
 
-    // potvrda brisanja (admin) 
+    // ─── 7. potvrda brisanja (admin) ───
     document.querySelectorAll('.btn-brisi').forEach(function (gumb) {
         gumb.addEventListener('click', function (e) {
             const naziv = gumb.dataset.naziv || 'ovaj zapis';
@@ -196,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // pregled slike prije uploada
+    // ─── 8. pregled slike prije uploada ───
     const uploadPolje = document.getElementById('slikaUpload');
     const pregledSlike = document.getElementById('pregledSlike');
     if (uploadPolje && pregledSlike) {
@@ -215,65 +283,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // lightbox za lokalna djela 
-    const lightbox       = document.getElementById('lightboxModal');
-    const lightboxSlika  = document.getElementById('lightboxSlika');
-    const lightboxZatvori = document.getElementById('lightboxZatvori');
-
-    if (lightbox) {
-        document.querySelectorAll('.lokalna-slika-klik').forEach(function (slika) {
-            slika.addEventListener('click', function () {
-                lightboxSlika.src = this.src;
-                lightboxSlika.alt = this.alt;
-                document.getElementById('lightboxNaslov').textContent    = this.dataset.naslov    || '';
-                document.getElementById('lightboxAutor').textContent     = this.dataset.autor     || '';
-                document.getElementById('lightboxGodina').textContent    = this.dataset.godina    || '';
-                document.getElementById('lightboxTehnika').textContent   = this.dataset.tehnika   || '';
-                document.getElementById('lightboxDimenzije').textContent = this.dataset.dimenzije || '';
-                document.getElementById('lightboxOpis').textContent      = this.dataset.opis      || '';
-
-                ['lightboxGodina','lightboxTehnika','lightboxDimenzije','lightboxOpis'].forEach(function (id) {
-                    const el = document.getElementById(id);
-                    el.style.display = el.textContent.trim() ? '' : 'none';
-                });
-
-                lightbox.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        lightboxZatvori.addEventListener('click', function () {
-            lightbox.style.display = 'none';
-            document.body.style.overflow = '';
-        });
-
-        lightbox.addEventListener('click', function (e) {
-            if (e.target === lightbox) {
-                lightbox.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && lightbox.style.display !== 'none') {
-                lightbox.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-        });
-    }
-
-
-    // automatsko sakrivanje poruka
+    // ─── 9. automatsko sakrivanje poruka ───
     setTimeout(function () {
         document.querySelectorAll('.poruka-uspjeh:not(.ne-skrivaj), .poruka-info:not(.ne-skrivaj)').forEach(function (el) {
             el.style.transition = 'opacity 0.5s';
             el.style.opacity = '0';
             setTimeout(() => el.remove(), 500);
         });
-    }, 4000);
+    }, 4000); // sakrij poruke nakon 4 sekunde
 
 
-    // glatko scrollanje na sidra
+    // ─── 10. glatko scrollanje na kotve (#) ───
     document.querySelectorAll('a[href^="#"]').forEach(function (link) {
         link.addEventListener('click', function (e) {
             const ciljId = this.getAttribute('href');
@@ -285,4 +305,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-});
+
+    // ─── 11. scroll animacije — IntersectionObserver ───
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('vidljivo');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -48px 0px' });
+
+        document.querySelectorAll('.animiraj').forEach(function (el) {
+            observer.observe(el);
+        });
+    } else {
+        // fallback za starije preglednike — odmah prikaži sve
+        document.querySelectorAll('.animiraj').forEach(function (el) {
+            el.classList.add('vidljivo');
+        });
+    }
+
+}); // kraj domcontentloaded

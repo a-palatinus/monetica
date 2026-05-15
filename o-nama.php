@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
@@ -14,57 +14,70 @@ include 'includes/header.php';
     </div>
 </section>
 
-<section class="sekcija">
+<section class="sekcija animiraj">
     <div class="kontejner">
 
-        <div class="sadrzaj-s-videom">
-            <div class="video-omotac">
-                <iframe src="https://www.youtube.com/embed/9T35H8sVhho?si=09MUa01EbPmPNQgj"
-                        title="Važnost likovne umjetnosti"
-                        allowfullscreen
-                        loading="lazy">
-                </iframe>
+        <!-- 1. Tko smo? — tekst lijevo, slika desno -->
+        <div class="o-nama-red">
+            <div class="o-nama-tekst animiraj slide-lijevo">
+                <h2 class="naslov-sekcija lijevo">Tko smo?</h2>
+                <p>Umjetničko društvo Monetica osnovano je 1987. godine s ciljem promicanja i razvoja likovnih
+                umjetnosti u široj zajednici. Kroz više od tri desetljeća postojanja postali smo jedno od vodećih
+                kulturnih udruženja u regiji. Naše članstvo obuhvaća profesionalne slikare, kipare i grafičare,
+                ali i amatere koji tek otkrivaju kreativni izraz — uvjereni da je likovnost dostupna svima.</p>
             </div>
-            <div>
-
-                <h2 class="naslov-sekcija lijevo">Naša priča</h2>
-
-                <div class="odlomak">
-                    <h3>Tko smo?</h3>
-                    <p>
-                        Umjetničko društvo Monetica osnovano je 1987. godine s ciljem promicanja i razvoja likovnih
-                        umjetnosti u široj zajednici. Kroz više od tri desetljeća postojanja, postali smo jedno od
-                        vodećih kulturnih udruženja u regiji, s članstvom koje obuhvaća profesionalne umjetnike,
-                        amatere i ljubitelje likovnih aktivnosti.
-                    </p>
-                </div>
-
-                <div class="odlomak">
-                    <h3>Što radimo?</h3>
-                    <p>
-                        Organiziramo godišnje izložbe, radionice i tečajeve za sve dobne skupne i razine znanja.
-                        Naši programi obuhvaćaju slikarstvo, kiparstvo, grafiku, digitalne medije i mnoge druge
-                        likovne discipline. Surađujemo s muzejima, galerijama i kulturnim institucijama diljem
-                        Hrvatske i Europe.
-                    </p>
-                </div>
-
-                <div class="odlomak">
-                    <h3>Naša vizija</h3>
-                    <p>
-                        Vjerujemo da je umjetnost temeljni dio ljudskog iskustva i zajedničke kulture. Naša
-                        digitalna platforma nova je faza razvoja — prostor gdje tradicija susreće suvremenu
-                        tehnologiju, a zajednica dobiva alate za međusobno dijeljenje i inspiraciju. Želimo biti
-                        most između lokalnog i globalnog umjetničkog scene.
-                    </p>
-                </div>
+            <div class="o-nama-slika animiraj slide-desno odgoda-1">
+                <img src="images/grupna_slika.jpg" alt="Grupna slika članova Društva Monetica">
             </div>
+        </div>
 
+        <!-- 2. Što radimo? — slika lijevo, tekst desno -->
+        <div class="o-nama-red">
+            <div class="o-nama-slika animiraj slide-lijevo">
+                <img src="images/sto_radimo.jpg" alt="Radionica Društva Monetica">
+            </div>
+            <div class="o-nama-tekst animiraj slide-desno odgoda-1">
+                <h2 class="naslov-sekcija lijevo">Što radimo?</h2>
+                <p>Svake godine organiziramo više od 15 izložbi, radionica i tečajeva prilagođenih svim
+                dobnim skupinama i razinama znanja — od dječjih ljetnih kampova do majstorskih tečajeva
+                s priznatim umjetnicima. Naši programi obuhvaćaju slikarstvo uljem i akvarelom, kiparstvo,
+                linogravuru, sitotisak, keramiku, plein air i digitalne medije. Surađujemo s muzejima,
+                galerijama i kulturnim institucijama u Hrvatskoj i Europi.</p>
+            </div>
+        </div>
+
+        <!-- 3. Naša vizija — tekst lijevo, slika desno -->
+        <div class="o-nama-red">
+            <div class="o-nama-tekst animiraj slide-lijevo">
+                <h2 class="naslov-sekcija lijevo">Naša vizija</h2>
+                <p>Vjerujemo da je umjetnost temeljni dio ljudskog iskustva i zajedničke kulture. Naša
+                digitalna platforma novi je korak u razvoju Društva — prostor gdje tradicija susreće
+                suvremenu tehnologiju, a zajednica dobiva alate za međusobno dijeljenje i inspiraciju.
+                Želimo biti most između lokalnog i globalnog likovnog svijeta te poticati nove generacije
+                da prepoznaju vrijednost kreativnog izražavanja.</p>
+            </div>
+            <div class="o-nama-slika animiraj slide-desno odgoda-1">
+                <img src="images/vizija.jpg" alt="Vizija Društva Monetica">
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="sekcija sekcija-siva animiraj">
+    <div class="kontejner">
+        <div class="video-omotac" style="max-width:820px; margin:0 auto;">
+            <iframe src="https://www.youtube.com/embed/c0htthdj_-g?si=42W3nUdcickacE4e"
+                    title="Umjetnost kao disanje"
+                    allowfullscreen
+                    loading="lazy">
+            </iframe>
         </div>
     </div>
 </section>
 
-<section class="sekcija sekcija-siva">
+
+<section class="sekcija sekcija-siva animiraj">
     <div class="kontejner">
         <h2 class="naslov-sekcija tekst-centar">Naše vrijednosti</h2>
 
@@ -90,19 +103,21 @@ include 'includes/header.php';
     </div>
 </section>
 
-<section class="sekcija" style="text-align: center;">
+<section class="sekcija animiraj" style="text-align: center;">
     <div class="kontejner" style="max-width: 600px;">
         <h2 class="naslov-sekcija tekst-centar">Želi se pridružiti?</h2>
         <p style="color: var(--boja-siva); margin-bottom: 30px; font-size: 1.05rem;">
             Uvijek smo otvoreni za nove članove i suradnje. Javite nam se i postanite dio naše
             kreativne zajednice!
         </p>
-        <a href="<?= BASE_URL ?>/kontakt.php" class="btn btn-primarni" style="margin-right: 15px;">
-            <i class="fa fa-envelope"></i> Kontaktirajte nas
-        </a>
-        <a href="<?= BASE_URL ?>/registracija.php" class="btn btn-akcent">
-            <i class="fa fa-user-plus"></i> Registrirajte se
-        </a>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; justify-content:center;">
+            <a href="<?= BASE_URL ?>/kontakt.php" class="btn btn-primarni">
+                <i class="fa fa-envelope"></i> Kontaktirajte nas
+            </a>
+            <a href="<?= BASE_URL ?>/registracija.php" class="btn btn-akcent">
+                <i class="fa fa-user-plus"></i> Registrirajte se
+            </a>
+        </div>
     </div>
 </section>
 

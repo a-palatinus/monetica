@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -9,6 +9,7 @@ $naslovStranice = 'Dodaj djelo';
 $poruka = '';
 $greska = '';
 
+// obrada forme
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $naslov    = trim($_POST['naslov']    ?? '');
     $autor     = trim($_POST['autor']     ?? '');
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($naslov) || empty($autor) || empty($kategorija)) {
         $greska = 'Naslov, autor i kategorija su obavezni.';
     } else {
+        //obrada slike
         $slikaPath = '';
 
         if (isset($_FILES['slika']) && $_FILES['slika']['error'] === UPLOAD_ERR_OK) {
@@ -34,9 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $ext       = pathinfo($_FILES['slika']['name'], PATHINFO_EXTENSION);
                 $imeDat    = 'djelo_' . time() . '_' . rand(100, 999) . '.' . $ext;
-                $putanja   = '../images/djela/' . $imeDat;
-                move_uploaded_file($_FILES['slika']['tmp_name'], $putanja);
-                $slikaPath = BASE_URL . '/images/djela/' . $imeDat;
+                move_uploaded_file($_FILES['slika']['tmp_name'], ROOT_DIR . '/images/djela/' . $imeDat);
+                $slikaPath = 'images/djela/' . $imeDat;
             }
         } elseif (!empty($_POST['slika_url'])) {
             //URL slike
@@ -101,19 +102,17 @@ include '../includes/header.php';
 
                 <div class="forma-2kol">
                     <div class="forma-grupa">
-                        <label for="tehnika">Tehnika</label>
-                        <input type="text" id="tehnika" name="tehnika" value="<?= ocisti($_POST['tehnika'] ?? '') ?>" placeholder="npr. Ulje na platnu">
+                        <label for="tehnika">Tehnika *</label>
+                        <input type="text" id="tehnika" name="tehnika" value="<?= ocisti($_POST['tehnika'] ?? '') ?>" placeholder="npr. Ulje na platnu" required>
                     </div>
                     <div class="forma-grupa">
                         <label for="kategorija">Kategorija *</label>
                         <select id="kategorija" name="kategorija" required>
                             <option value="">-- odaberi --</option>
                             <option value="Slikarstvo"         <?= ($_POST['kategorija'] ?? '') === 'Slikarstvo' ? 'selected' : '' ?>>Slikarstvo</option>
-                            <option value="Crtanje"            <?= ($_POST['kategorija'] ?? '') === 'Crtanje' ? 'selected' : '' ?>>Crtanje</option>
-                            <option value="Grafika"            <?= ($_POST['kategorija'] ?? '') === 'Grafika' ? 'selected' : '' ?>>Grafika</option>
-                            <option value="Apstraktno"         <?= ($_POST['kategorija'] ?? '') === 'Apstraktno' ? 'selected' : '' ?>>Apstraktno</option>
-                            <option value="Fotografija"        <?= ($_POST['kategorija'] ?? '') === 'Fotografija' ? 'selected' : '' ?>>Fotografija</option>
-                            <option value="Ostalo"             <?= ($_POST['kategorija'] ?? '') === 'Ostalo' ? 'selected' : '' ?>>Ostalo</option>
+                            <option value="Crtež"            <?= ($_POST['kategorija'] ?? '') === 'Crtež' ? 'selected' : '' ?>>Crtež</option>
+                            <option value="Fotografija"            <?= ($_POST['kategorija'] ?? '') === 'Fotografija' ? 'selected' : '' ?>>Fotografija</option>
+                            <option value="Ostalo"         <?= ($_POST['kategorija'] ?? '') === 'Ostalo' ? 'selected' : '' ?>>Ostalo</option>
                         </select>
                     </div>
                 </div>

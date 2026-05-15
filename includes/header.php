@@ -11,6 +11,19 @@ $naslovStranice = $naslovStranice ?? 'Monetica';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= ocisti($naslovStranice) ?> | Umjetničko društvo Monetica</title>
 
+    <meta name="description" content="Digitalna platforma Umjetničkog društva Monetica — galerija radova, radionice, vijesti i zajednica ljubitelja likovnih umjetnosti od 1987. godine.">
+    <meta name="author" content="Umjetničko društvo Monetica">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#2c1810">
+
+    <meta property="og:title" content="<?= ocisti($naslovStranice) ?> | Monetica">
+    <meta property="og:description" content="Digitalna platforma Umjetničkog društva Monetica — galerija, radionice i zajednica ljubitelja likovnih umjetnosti.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="hr_HR">
+    <meta property="og:site_name" content="Monetica">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%232c1810'/><text y='76' x='50' text-anchor='middle' font-size='68' font-family='Georgia,serif' fill='%23c9a84c'>M</text></svg>">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
@@ -20,7 +33,8 @@ $naslovStranice = $naslovStranice ?? 'Monetica';
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css?v=<?= filemtime(ROOT_DIR . '/css/style.css') ?>">
+    <script>window.BASE_URL = '<?= BASE_URL ?>';</script>
 </head>
 <body>
 
@@ -64,8 +78,8 @@ $naslovStranice = $naslovStranice ?? 'Monetica';
                         </ul>
                     </li>
                 <?php else: ?>
-                    <li><a href="/monetica/prijava.php" class="nav-link nav-btn-prijava">Prijava</a></li>
-                    <li><a href="/monetica/registracija.php" class="nav-link nav-btn-reg">Registracija</a></li>
+                    <li><a href="<?= BASE_URL ?>/prijava.php" class="nav-link nav-btn-prijava">Prijava</a></li>
+                    <li><a href="<?= BASE_URL ?>/registracija.php" class="nav-link nav-btn-reg">Registracija</a></li>
                 <?php endif; ?>
             </ul>
 

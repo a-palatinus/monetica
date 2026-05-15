@@ -1,4 +1,4 @@
-﻿</main>
+</main>
 <footer class="footer">
     <div class="footer-inner">
 
@@ -31,6 +31,9 @@
                 <a href="#" aria-label="Twitter"   class="social-ikona"><i class="fab fa-twitter"></i></a>
             </div>
 
+            <p style="font-size:0.8rem; color:rgba(255,255,255,0.5); margin-bottom:8px; margin-top:20px;">
+                <i class="fa fa-envelope" style="color:var(--boja-akcent);"></i> Pretplatite se na naš newsletter:
+            </p>
             <form class="newsletter-mini" action="<?= BASE_URL ?>/newsletter.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <input type="email" name="email" placeholder="Vaš e-mail..." required>
