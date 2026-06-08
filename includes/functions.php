@@ -98,25 +98,19 @@ function dohvatiRSS($url, $max = 6) {
             $br++;
         }
     } catch (Exception $e) {
-        // Ako RSS ne radi, vrati prazan niz — stranica će i dalje raditi
     }
     return $vijesti;
 }
 
-// pretvori putanju slike iz XML-a u ispravnu URL za <img src>
-// — ako je već http(s) URL, vrati ga kakav jest
-// — inače dodaj BASE_URL prefix (relativna putanja od korijena projekta)
 function urlSlike($putanja) {
     if (empty($putanja)) return '';
     if (strncmp($putanja, 'http', 4) === 0) return $putanja;
     return BASE_URL . '/' . ltrim($putanja, '/');
 }
 
-// ─── XML — namespace konstante ───
 const GAL_NS = 'http://monetica.hr/galerija';
 const RAD_NS = 'http://monetica.hr/radionice';
 
-// dohvat svih djela (gal:djelo) iz XML-a
 function dohvatiDjelaXML($kategorija = null) {
     $putanja = __DIR__ . '/../data/galerija.xml';
     if (!file_exists($putanja)) return [];
@@ -147,7 +141,6 @@ function dohvatiDjelaXML($kategorija = null) {
     return $djela;
 }
 
-// dohvat radionica (rad:radionica) iz XML-a
 function dohvatiRadioniceXML() {
     $putanja = __DIR__ . '/../data/galerija.xml';
     if (!file_exists($putanja)) return [];
@@ -171,14 +164,12 @@ function dohvatiRadioniceXML() {
     return $radionice;
 }
 
-// dohvat kategorija iz XML-a
 function dohvatiKategorijeXML() {
     $kategorije = array_unique(array_column(dohvatiDjelaXML(), 'kategorija'));
     sort($kategorije);
     return $kategorije;
 }
 
-// spremanje novog djela u XML datoteku
 function spremiDjeloXML($djelo) {
     $putanja = __DIR__ . '/../data/galerija.xml';
     $dom = new DOMDocument('1.0', 'UTF-8');
@@ -204,7 +195,6 @@ function spremiDjeloXML($djelo) {
     return $dom->save($putanja);
 }
 
-// uređivanje postojećeg djela u XML-u
 function urediDjeloXML($id, $podaci) {
     $putanja = __DIR__ . '/../data/galerija.xml';
     $dom = new DOMDocument('1.0', 'UTF-8');
@@ -228,7 +218,6 @@ function urediDjeloXML($id, $podaci) {
     return $dom->save($putanja);
 }
 
-// brisanje djela iz XML-a
 function izbrisiDjeloXML($id) {
     $putanja = __DIR__ . '/../data/galerija.xml';
     $dom = new DOMDocument('1.0', 'UTF-8');
@@ -244,7 +233,6 @@ function izbrisiDjeloXML($id) {
     return $dom->save($putanja);
 }
 
-// provjeri je li djelo u favoritima korisnika
 function jeUFavoritima($pdo, $korisnikId, $djeloId, $izvor) {
     $stmt = $pdo->prepare("SELECT id FROM favoriti WHERE korisnik_id = ? AND djelo_id = ? AND izvor = ?");
     $stmt->execute([$korisnikId, $djeloId, $izvor]);
