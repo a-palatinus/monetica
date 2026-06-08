@@ -1,7 +1,4 @@
 <?php
-// =============================================
-// ADMIN — Prikaz i uređivanje galerije (XML)
-// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -12,7 +9,6 @@ $naslovStranice = 'Uredi galeriju';
 $poruka = '';
 $greska = '';
 
-// ─── Brisanje djela ───
 if (isset($_GET['brisi'])) {
     $id = trim($_GET['brisi']);
     izbrisiDjeloXML($id);
@@ -20,7 +16,6 @@ if (isset($_GET['brisi'])) {
     exit;
 }
 
-// ─── Obrada uredivanja ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $id = $_POST['id'];
     $podaci = [
@@ -37,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     if (empty($podaci['naslov']) || empty($podaci['autor'])) {
         $greska = 'Naslov i autor su obavezni.';
     } else {
-        // Obrada uploada slike
         if (isset($_FILES['slika']) && $_FILES['slika']['error'] === UPLOAD_ERR_OK) {
             $ext    = pathinfo($_FILES['slika']['name'], PATHINFO_EXTENSION);
             $imeDat = 'djelo_' . $id . '_' . time() . '.' . $ext;
@@ -50,10 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     }
 }
 
-// Dohvati sva djela za prikaz u tablici
 $svaDjela = dohvatiDjelaXML();
 
-// Odabrano djelo za uređivanje (ako je kliknut gumb Uredi)
 $uredujemo = null;
 if (isset($_GET['uredi'])) {
     foreach ($svaDjela as $d) {
@@ -70,7 +62,6 @@ include '../includes/header.php';
 <section class="sekcija" style="padding-top: 40px;">
     <div class="kontejner">
 
-        <!-- Admin navigacija -->
         <div class="admin-nav">
             <a href="<?= BASE_URL ?>/admin/index.php"><i class="fa fa-tachometer-alt"></i> Nadzorna ploča</a>
             <a href="<?= BASE_URL ?>/admin/vijesti.php"><i class="fa fa-newspaper"></i> Vijesti</a>
@@ -80,7 +71,6 @@ include '../includes/header.php';
             <a href="<?= BASE_URL ?>/admin/poruke.php"><i class="fa fa-envelope"></i> Poruke</a>
         </div>
 
-        <!-- Poruke -->
         <?php if (isset($_GET['obrisano'])): ?>
             <div class="poruka-uspjeh"><i class="fa fa-check-circle"></i> Djelo je uspješno obrisano.</div>
         <?php endif; ?>
@@ -92,7 +82,6 @@ include '../includes/header.php';
         <?php endif; ?>
 
         <?php if ($uredujemo): ?>
-        <!-- ─── Forma za uređivanje odabranog djela ─── -->
         <div class="forma-omotac siroka" style="max-width: 700px; margin: 0 0 40px;">
             <h2 style="margin-bottom: 5px;">Uredi djelo</h2>
             <p class="podnaslov-forme" style="text-align:left;"><?= ocisti($uredujemo['naslov']) ?></p>
@@ -118,7 +107,7 @@ include '../includes/header.php';
                     <div class="forma-grupa">
                         <label>Kategorija</label>
                         <select name="kategorija">
-                            <?php foreach (['Slikarstvo','Kiparstvo','Crtanje','Grafika','Apstraktno','Digitalna umjetnost','Fotografija','Ostalo'] as $kat): ?>
+                            <?php foreach (['Crtež','Fotografija','Slikarstvo'] as $kat): ?>
                                 <option value="<?= $kat ?>" <?= $uredujemo['kategorija'] === $kat ? 'selected' : '' ?>><?= $kat ?></option>
                             <?php endforeach; ?>
                         </select>
@@ -163,7 +152,6 @@ include '../includes/header.php';
         </div>
         <?php endif; ?>
 
-        <!-- ─── Popis svih djela ─── -->
         <h2 class="naslov-sekcija lijevo">Sva djela u galeriji (<?= count($svaDjela) ?>)</h2>
 
         <?php if (empty($svaDjela)): ?>
