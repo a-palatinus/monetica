@@ -2,11 +2,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            attributeFormDefault="unqualified"
            elementFormDefault="qualified"
-           targetNamespace="http://monetica.hr/galerija"
-           xmlns:gal="http://monetica.hr/galerija"
-           xmlns:rad="http://monetica.hr/radionice">
+           targetNamespace="https://monetica.online/galerija.php"
+           xmlns:gal="https://monetica.online/galerija"
+           xmlns:rad="https://monetica.online/radionice">
 
-    <xs:import namespace="http://monetica.hr/radionice" schemaLocation="radionice.xsd"/>
+    <xs:import namespace="https://monetica.online/radionice" schemaLocation="radionice.xsd"/>
 
     <xs:element name="galerija">
         <xs:complexType>
@@ -38,14 +38,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="tehnika">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:minLength value="1"/>
-                            <xs:pattern value=".*\S.*"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
+                <xs:element name="tehnika" type="xs:string" minOccurs="0"/>
                 <xs:element name="godina">
                     <xs:simpleType>
                         <xs:restriction base="xs:integer">
@@ -61,7 +54,6 @@
                             <xs:enumeration value="Slikarstvo"/>
                             <xs:enumeration value="Fotografija"/>
                             <xs:enumeration value="Crtež"/>
-                            <xs:enumeration value="Ostalo"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
