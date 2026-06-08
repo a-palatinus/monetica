@@ -17,7 +17,6 @@ include 'includes/header.php';
 <section class="sekcija animiraj">
     <div class="kontejner">
 
-        <!-- 1. Tko smo? — tekst lijevo, slika desno -->
         <div class="o-nama-red">
             <div class="o-nama-tekst animiraj slide-lijevo">
                 <h2 class="naslov-sekcija lijevo">Tko smo?</h2>
@@ -31,7 +30,6 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- 2. Što radimo? — slika lijevo, tekst desno -->
         <div class="o-nama-red">
             <div class="o-nama-slika animiraj slide-lijevo">
                 <img src="images/sto_radimo.jpg" alt="Radionica Društva Monetica">
@@ -46,7 +44,6 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- 3. Naša vizija — tekst lijevo, slika desno -->
         <div class="o-nama-red">
             <div class="o-nama-tekst animiraj slide-lijevo">
                 <h2 class="naslov-sekcija lijevo">Naša vizija</h2>
