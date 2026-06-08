@@ -5,13 +5,10 @@ require_once 'includes/auth.php';
 
 $naslovStranice = 'Galerija';
 
-// ─── 1. Radovi Monetice iz XML-a ───
 $svaDjela = dohvatiDjelaXML();
 
-// ─── 2. Radionice i izložbe iz XML-a (rad: namespace) ───
 $radioniceSlike = dohvatiRadioniceXML();
 
-// ─── 3. Javna remek-djela (Art Institute of Chicago API) ───
 function dohvatiSvjetskaDjelaGalerija($max = 9) {
     $url = "https://api.artic.edu/api/v1/artworks?page=1&limit={$max}&fields=id,title,artist_display,date_display,medium_display,image_id";
 
@@ -65,17 +62,13 @@ include 'includes/header.php';
     </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════
-     KAROZEL 1 — Radovi Društva Monetica (XML)
-     ═══════════════════════════════════════════ -->
 <section class="sekcija animiraj">
     <div class="kontejner">
 
         <h2 class="naslov-sekcija lijevo" style="padding-left:55px;">
             Radovi Društva Monetica</h2>
         <p style="color:var(--boja-siva); margin-bottom:36px; max-width:700px; font-size:0.95rem; line-height:1.8; padding-left:55px;">
-            Originalna umjetnička djela članova Društva Monetica — slike, grafike, skulpture i crteži
+            Originalna umjetnička djela članova Društva Monetica — slike, fotografije i crteži
             nastali kroz gotovo četiri desetljeća rada. Kliknite na djelo za uvećani prikaz s detaljima
             o tehnici i autoru.
         </p>
@@ -161,10 +154,6 @@ include 'includes/header.php';
     </div>
 </section>
 
-
-<!-- ═══════════════════════════════════════════
-     KAROZEL 2 — Radionice i izložbe (foto arhiv)
-     ═══════════════════════════════════════════ -->
 <section class="sekcija sekcija-siva animiraj slide-lijevo">
     <div class="kontejner">
 
@@ -205,10 +194,6 @@ include 'includes/header.php';
     </div>
 </section>
 
-
-<!-- ═══════════════════════════════════════════
-     KAROZEL 3 — Javna remek-djela (API)
-     ═══════════════════════════════════════════ -->
 <section class="sekcija animiraj slide-desno">
     <div class="kontejner">
 
