@@ -7,17 +7,14 @@ zahtijevajAdmina();
 
 $naslovStranice = 'Admin panel';
 
-// statistike za dashboard
 $brKorisnika = $pdo->query("SELECT COUNT(*) FROM korisnici")->fetchColumn();
 $brPoruka    = $pdo->query("SELECT COUNT(*) FROM kontakt_poruke WHERE procitano = 0")->fetchColumn();
 $brVijesti   = $pdo->query("SELECT COUNT(*) FROM vijesti")->fetchColumn();
 $brDjela     = count(dohvatiDjelaXML());
 $brNewsletter = $pdo->query("SELECT COUNT(*) FROM newsletter WHERE aktivan = 1")->fetchColumn();
 
-// zadnjih 5 poruka
 $zadnjePoruke = $pdo->query("SELECT * FROM kontakt_poruke ORDER BY datum_slanja DESC LIMIT 5")->fetchAll();
 
-// zadnjih 5 korisnika
 $zadnjiKorisnici = $pdo->query("SELECT * FROM korisnici ORDER BY datum_registracije DESC LIMIT 5")->fetchAll();
 
 include '../includes/header.php';
