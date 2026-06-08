@@ -3,14 +3,15 @@
 define('ROOT_DIR', dirname(__DIR__));
 define('BASE_URL', rtrim(str_replace('\\', '/', substr(ROOT_DIR, strlen(rtrim($_SERVER['DOCUMENT_ROOT'], '/\\')))), '/'));
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
+define('DB_HOST', '');
+define('DB_PORT', '3306');
+define('DB_USER', '');
 define('DB_PASS', '');
-define('DB_NAME', 'monetica');
+define('DB_NAME', '');
 
 try {
     $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
         DB_USER,
         DB_PASS,
         [
