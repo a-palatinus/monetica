@@ -116,11 +116,10 @@ include 'includes/header.php';
     </div>
 </section>
 
-<!-- automatsko osvježavanje RSS-a svakih 10 minuta -->
 <script>
     setTimeout(function() {
         location.reload();
-    }, 600000); // 10 minuta
+    }, 600000); 
 </script>
 
 <?php include 'includes/footer.php'; ?>
