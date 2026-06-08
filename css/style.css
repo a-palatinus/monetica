@@ -1,9 +1,4 @@
-/* =============================================
-   MONETICA — Glavni stylesheet
-   Fontovi: Playfair Display (naslovi), Lato (tekst)
-   ============================================= */
 
-/* ─── CSS varijable ─── */
 :root {
     --boja-primarni:  #2d1f12;
     --boja-akcent:    #c9a84c;
@@ -20,7 +15,6 @@
     --prijelaz:       0.25s ease;
 }
 
-/* ─── Reset i osnova ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
@@ -38,7 +32,6 @@ img { max-width: 100%; height: auto; display: block; }
 h1, h2, h3, h4 { font-family: var(--font-naslov); color: var(--boja-primarni); line-height: 1.25; }
 ul { list-style: none; }
 
-/* ─── Pomocne klase ─── */
 .kontejner {
     max-width: 1200px;
     margin: 0 auto;
@@ -48,7 +41,6 @@ ul { list-style: none; }
 .tekst-centar { text-align: center; }
 .razmak-v { margin: 80px 0; }
 
-/* ─── Gumbi ─── */
 .btn {
     display: inline-block;
     padding: 11px 28px;
@@ -94,7 +86,6 @@ ul { list-style: none; }
     border-color: var(--boja-bijela);
 }
 
-/* Naslov sekcije s ukrasnom linijom */
 .naslov-sekcija {
     font-size: clamp(1.6rem, 3vw, 2.1rem);
     letter-spacing: -0.02em;
@@ -110,7 +101,6 @@ ul { list-style: none; }
 }
 .naslov-sekcija.lijevo::after { margin-left: 0; }
 
-/* Poruke */
 .poruka-uspjeh,
 .poruka-greska,
 .poruka-info {
@@ -124,9 +114,6 @@ ul { list-style: none; }
 .poruka-info   { background: #e8f4f8; color: #1a5276; border-left: 3px solid #2196F3; }
 
 
-/* =============================================
-   NAVIGACIJA
-   ============================================= */
 .nav-glavna {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -218,7 +205,6 @@ ul { list-style: none; }
     opacity: 0;
     pointer-events: none;
     transform: translateY(-6px);
-    /* čeka 350ms prije sakrivanja — daje osjećaj da "ostaje dulje" */
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.35s;
     position: absolute;
     top: calc(100% + 8px);
@@ -271,10 +257,6 @@ ul { list-style: none; }
 .hamburger.aktivan span:nth-child(2) { opacity: 0; }
 .hamburger.aktivan span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-
-/* =============================================
-   HERO SEKCIJA (Početna)
-   ============================================= */
 .hero {
     min-height: 88vh;
     background-color: #1a0d06;
@@ -348,10 +330,6 @@ ul { list-style: none; }
     50%       { transform: translateX(-50%) translateY(8px); }
 }
 
-
-/* =============================================
-   SEKCIJE
-   ============================================= */
 .sekcija { padding: 80px 0; }
 .sekcija-siva { background: var(--boja-siva-sv); }
 
@@ -410,10 +388,6 @@ ul { list-style: none; }
 }
 .stat-opis { color: var(--boja-siva); font-size: 0.85rem; margin-top: 4px; }
 
-
-/* =============================================
-   GALERIJA KARTICA
-   ============================================= */
 .galerija-mreza {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -526,8 +500,6 @@ ul { list-style: none; }
     text-transform: uppercase;
 }
 
-
-/* ─── O nama — naizmjenični red (tekst + slika) ─── */
 .o-nama-red {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -548,8 +520,6 @@ ul { list-style: none; }
     .o-nama-red { grid-template-columns: 1fr; gap: 32px; padding: 36px 0; margin-bottom: 16px; }
 }
 
-
-/* ─── Filter traka (Galerija) ─── */
 .filter-traka {
     display: flex;
     flex-wrap: wrap;
@@ -579,10 +549,6 @@ ul { list-style: none; }
     color: var(--boja-bijela);
 }
 
-
-/* =============================================
-   CAROUSEL (klizač)
-   ============================================= */
 .carousel-omotac {
     position: relative;
     overflow: hidden;
@@ -621,10 +587,6 @@ ul { list-style: none; }
 .carousel-gumb.lijevi { left: 8px; }
 .carousel-gumb.desni  { right: 8px; }
 
-
-/* =============================================
-   PRETRAŽIVAČ (Galerija)
-   ============================================= */
 .pretraga-okvir {
     background: var(--boja-bijela);
     border-radius: var(--zaobljenje);
@@ -669,10 +631,6 @@ ul { list-style: none; }
     box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
 }
 
-
-/* =============================================
-   VIJESTI KARTICE (Aktualno)
-   ============================================= */
 .vijesti-mreza {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -733,9 +691,6 @@ ul { list-style: none; }
 }
 
 
-/* =============================================
-   FORME (Prijava, Registracija, Kontakt)
-   ============================================= */
 .forma-omotac {
     max-width: 500px;
     margin: 60px auto;
@@ -805,10 +760,6 @@ ul { list-style: none; }
     gap: 16px;
 }
 
-
-/* =============================================
-   O NAMA STRANICA — hero za interne stranice
-   ============================================= */
 .o-nama-hero {
     background: linear-gradient(145deg, #2d1f12 0%, #4a3020 60%, #2d1f12 100%);
     color: var(--boja-bijela);
@@ -847,10 +798,6 @@ ul { list-style: none; }
 .odlomak h3 { font-size: 1.25rem; margin-bottom: 10px; color: var(--boja-akcent); }
 .odlomak p { color: var(--boja-siva); line-height: 1.8; }
 
-
-/* =============================================
-   KONTAKT STRANICA
-   ============================================= */
 .kontakt-mreza {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -882,10 +829,6 @@ ul { list-style: none; }
     flex-shrink: 0;
 }
 
-
-/* =============================================
-   PROFIL I ADMIN
-   ============================================= */
 .profil-hero {
     background: linear-gradient(145deg, #2d1f12, #4a3020);
     color: var(--boja-bijela);
@@ -1010,10 +953,6 @@ ul { list-style: none; }
     gap: 30px;
 }
 
-
-/* =============================================
-   PODNOŽJE (Footer)
-   ============================================= */
 .footer {
     background: #1e140c;
     color: rgba(255,255,255,0.72);
@@ -1110,10 +1049,6 @@ ul { list-style: none; }
     color: rgba(255,255,255,0.38);
 }
 
-
-/* =============================================
-   SCROLL ANIMACIJE
-   ============================================= */
 .animiraj {
     opacity: 0;
     transform: translateY(36px);
@@ -1129,10 +1064,6 @@ ul { list-style: none; }
 .animiraj.odgoda-2 { transition-delay: 0.2s; }
 .animiraj.odgoda-3 { transition-delay: 0.3s; }
 
-
-/* =============================================
-   NEWSLETTER SEKCIJA (Kontakt)
-   ============================================= */
 .newsletter-sekcija {
     background: linear-gradient(135deg, var(--boja-primarni) 0%, #4a3020 100%);
     border-radius: var(--zaobljenje);
@@ -1203,12 +1134,6 @@ ul { list-style: none; }
 }
 .newsletter-info-ikone span i { color: var(--boja-akcent); }
 
-
-/* =============================================
-   O NAMA — blokovi priče + kronologija kartice
-   ============================================= */
-
-/* Kronologija — mreza kartica */
 .kronologija-mreza {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1262,12 +1187,6 @@ ul { list-style: none; }
     margin: 0;
 }
 
-
-/* =============================================
-   RESPONZIVNOST
-   ============================================= */
-
-/* Tablet: do 992px */
 @media (max-width: 992px) {
     .mreza-3 { grid-template-columns: 1fr 1fr; }
     .statistike { grid-template-columns: repeat(2, 1fr); }
@@ -1280,17 +1199,13 @@ ul { list-style: none; }
     .kronologija-mreza { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Mobitel: do 768px */
 @media (max-width: 768px) {
-
-    /* animacije isključene na mobilnom — IntersectionObserver ne radi pouzdano s overflow-x:hidden */
     .animiraj {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
     }
 
-    /* carousel na mobilnom */
     .carousel-omotac { padding: 0 !important; border-radius: 0; }
     .carousel-gumb { width: 36px; height: 36px; font-size: 0.8rem; }
     .carousel-gumb.lijevi { left: 6px; }
@@ -1337,13 +1252,11 @@ ul { list-style: none; }
     .carousel-item-custom { min-width: 100%; }
     .nav-spacer { height: 68px; }
 
-    /* newsletter */
     .newsletter-sekcija { padding: 36px 24px; }
     .newsletter-forma-velika { flex-direction: column; border-radius: var(--zaobljenje); }
     .newsletter-forma-velika input,
     .newsletter-forma-velika button { border-radius: 0; }
 
-    /* ─── Admin mobilni prikaz ─── */
     .admin-nav {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -1379,7 +1292,6 @@ ul { list-style: none; }
     .kontejner { padding: 0 16px; }
 }
 
-/* Mali mobiteli: do 480px */
 @media (max-width: 480px) {
     .hero-naslov { font-size: 2.2rem; }
     .naslov-sekcija { font-size: 1.5rem; }
@@ -1392,7 +1304,6 @@ ul { list-style: none; }
     .zasto-ikone { grid-template-columns: 1fr 1fr !important; }
 }
 
-/* Admin sučelje — tableti i širi mobiteli (do 900px) */
 @media (max-width: 900px) {
     .admin-nav {
         display: grid;
