@@ -1,7 +1,4 @@
 <?php
-// =============================================
-// ADMIN — Upravljanje vijestima/blogom
-// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -12,7 +9,6 @@ $naslovStranice = 'Vijesti';
 $poruka = '';
 $greska = '';
 
-// ─── Brisanje vijesti ───
 if (isset($_GET['brisi'])) {
     $id = (int)$_GET['brisi'];
     $pdo->prepare("DELETE FROM vijesti WHERE id = ?")->execute([$id]);
@@ -20,7 +16,6 @@ if (isset($_GET['brisi'])) {
     exit;
 }
 
-// ─── Dodavanje nove vijesti ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $naslov = trim($_POST['naslov'] ?? '');
     $tekst  = trim($_POST['tekst']  ?? '');
@@ -29,13 +24,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($naslov) || empty($tekst)) {
         $greska = 'Naslov i tekst su obavezni.';
     } else {
-        $stmt = $pdo->prepare("INSERT INTO vijesti (naslov, tekst, slika, autor_id) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$naslov, $tekst, $slika, $_SESSION['korisnik_id']]);
-        $poruka = 'Vijest je uspješno objavljena.';
+        if (isset($_FILES['slika_upload']) && $_FILES['slika_upload']['error'] === UPLOAD_ERR_OK) {
+            $dozvoljeni = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $tip = mime_content_type($_FILES['slika_upload']['tmp_name']);
+            if (!in_array($tip, $dozvoljeni)) {
+                $greska = 'Dozvoljeni formati: JPG, PNG, GIF, WebP.';
+            } elseif ($_FILES['slika_upload']['size'] > 5 * 1024 * 1024) {
+                $greska = 'Slika ne smije biti veća od 5 MB.';
+            } else {
+                $ext    = pathinfo($_FILES['slika_upload']['name'], PATHINFO_EXTENSION);
+                $imeDat = 'vijest_' . time() . '_' . rand(100, 999) . '.' . $ext;
+                move_uploaded_file($_FILES['slika_upload']['tmp_name'], ROOT_DIR . '/images/vijesti/' . $imeDat);
+                $slika = BASE_URL . '/images/vijesti/' . $imeDat;
+            }
+        }
+
+        if (!$greska) {
+            $stmt = $pdo->prepare("INSERT INTO vijesti (naslov, tekst, slika, autor_id) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$naslov, $tekst, $slika, $_SESSION['korisnik_id']]);
+            $poruka = 'Vijest je uspješno objavljena.';
+        }
     }
 }
 
-// Dohvati sve vijesti
 $vijesti = $pdo->query("SELECT v.*, k.ime, k.prezime FROM vijesti v LEFT JOIN korisnici k ON v.autor_id = k.id ORDER BY v.datum DESC")->fetchAll();
 
 include '../includes/header.php';
@@ -65,17 +76,20 @@ include '../includes/header.php';
 
         <div class="admin-2kol">
 
-            <!-- ─── Forma za dodavanje vijesti ─── -->
             <div>
                 <h2 class="naslov-sekcija lijevo" style="font-size: 1.4rem;">Dodaj novu vijest</h2>
 
-                <form action="<?= BASE_URL ?>/admin/vijesti.php" method="POST">
+                <form action="<?= BASE_URL ?>/admin/vijesti.php" method="POST" enctype="multipart/form-data">
                     <div class="forma-grupa">
                         <label>Naslov vijesti *</label>
                         <input type="text" name="naslov" value="<?= ocisti($_POST['naslov'] ?? '') ?>" placeholder="Naslov vijesti..." required>
                     </div>
                     <div class="forma-grupa">
-                        <label>URL slike <small style="color:var(--boja-siva)">(nije obavezno)</small></label>
+                        <label>Slika <small style="color:var(--boja-siva)">(upload s računala, max 5MB)</small></label>
+                        <input type="file" name="slika_upload" accept="image/*">
+                    </div>
+                    <div class="forma-grupa">
+                        <label>ili URL slike <small style="color:var(--boja-siva)">(npr. Unsplash direktni link)</small></label>
                         <input type="url" name="slika" value="<?= ocisti($_POST['slika'] ?? '') ?>" placeholder="https://...">
                     </div>
                     <div class="forma-grupa">
@@ -88,7 +102,6 @@ include '../includes/header.php';
                 </form>
             </div>
 
-            <!-- ─── Popis vijesti ─── -->
             <div>
                 <h2 class="naslov-sekcija lijevo" style="font-size: 1.4rem;">Objavljene vijesti (<?= count($vijesti) ?>)</h2>
 
