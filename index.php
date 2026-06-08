@@ -1,23 +1,17 @@
 <?php
-// učitavanje potrebnih datoteka
 require_once 'includes/db.php';
 require_once 'includes/functions.php';
 require_once 'includes/auth.php';
 
-// naslov stranice
 $naslovStranice = 'Dobrodošli';
 
-// dohvat zadnjih 3 vijesti iz baze
 $vijesti = $pdo->query("SELECT * FROM vijesti ORDER BY datum DESC LIMIT 3")->fetchAll();
 
-// prvih 6 djela iz xml-a za prikaz na početnoj
 $prikazDjela = array_slice(dohvatiDjelaXML(), 0, 3);
 
-// statistike: broj članova i ukupan broj djela
 $brClanova = $pdo->query("SELECT COUNT(*) FROM korisnici")->fetchColumn();
 $brDjela   = count(dohvatiDjelaXML());
 
-// uključi zajedničko zaglavlje
 include 'includes/header.php';
 ?>
 <section class="hero" style="--hero-slika: url('<?= BASE_URL ?>/images/header.jpg')">
@@ -164,5 +158,5 @@ include 'includes/header.php';
     </div>
 </section>
 
-<?php // uključi zajedničko podnožje
+<?php
 include 'includes/footer.php'; ?>
