@@ -1,7 +1,4 @@
 <?php
-// =============================================
-// ADMIN — Upravljanje korisnicima
-// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -11,29 +8,24 @@ zahtijevajAdmina();
 $naslovStranice = 'Upravljanje korisnicima';
 $poruka = '';
 
-// ─── Promjena uloge korisnika ───
 if (isset($_GET['uloga']) && isset($_GET['id'])) {
     $novaUloga = $_GET['uloga'] === 'admin' ? 'admin' : 'korisnik';
     $korisnikId = (int)$_GET['id'];
 
-    // Ne možeš promijeniti svoju vlastitu ulogu
     if ($korisnikId !== $_SESSION['korisnik_id']) {
         $pdo->prepare("UPDATE korisnici SET uloga = ? WHERE id = ?")->execute([$novaUloga, $korisnikId]);
         $poruka = 'Uloga korisnika je promijenjena.';
     }
 }
 
-// ─── Brisanje korisnika ───
 if (isset($_GET['brisi'])) {
     $korisnikId = (int)$_GET['brisi'];
-    // Ne možeš obrisati sebe
     if ($korisnikId !== $_SESSION['korisnik_id']) {
         $pdo->prepare("DELETE FROM korisnici WHERE id = ?")->execute([$korisnikId]);
         $poruka = 'Korisnik je obrisan.';
     }
 }
 
-// Dohvati sve korisnike
 $korisnici = $pdo->query("SELECT * FROM korisnici ORDER BY datum_registracije DESC")->fetchAll();
 
 include '../includes/header.php';
@@ -42,7 +34,6 @@ include '../includes/header.php';
 <section class="sekcija" style="padding-top: 40px;">
     <div class="kontejner">
 
-        <!-- Admin navigacija -->
         <div class="admin-nav">
             <a href="<?= BASE_URL ?>/admin/index.php"><i class="fa fa-tachometer-alt"></i> Nadzorna ploča</a>
             <a href="<?= BASE_URL ?>/admin/vijesti.php"><i class="fa fa-newspaper"></i> Vijesti</a>
@@ -88,7 +79,6 @@ include '../includes/header.php';
                     <td data-label="Registriran"><?= date('d.m.Y', strtotime($k['datum_registracije'])) ?></td>
                     <td data-label="">
                         <?php if ($k['id'] !== $_SESSION['korisnik_id']): ?>
-                            <!-- Promjena uloge -->
                             <?php if ($k['uloga'] === 'korisnik'): ?>
                                 <a href="?uloga=admin&id=<?= $k['id'] ?>"
                                    style="color: #f39c12; margin-right: 10px;"
@@ -103,7 +93,6 @@ include '../includes/header.php';
                                 </a>
                             <?php endif; ?>
 
-                            <!-- Brisanje -->
                             <a href="?brisi=<?= $k['id'] ?>"
                                class="btn-brisi"
                                data-naziv="<?= ocisti($k['ime'] . ' ' . $k['prezime']) ?>"
