@@ -9,7 +9,6 @@ $naslovStranice = 'Dodaj djelo';
 $poruka = '';
 $greska = '';
 
-// obrada forme
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $naslov    = trim($_POST['naslov']    ?? '');
     $autor     = trim($_POST['autor']     ?? '');
@@ -22,11 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($naslov) || empty($autor) || empty($kategorija)) {
         $greska = 'Naslov, autor i kategorija su obavezni.';
     } else {
-        //obrada slike
         $slikaPath = '';
 
         if (isset($_FILES['slika']) && $_FILES['slika']['error'] === UPLOAD_ERR_OK) {
-            //upload s računala
             $dozvoljeni = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             $tip = mime_content_type($_FILES['slika']['tmp_name']);
             if (!in_array($tip, $dozvoljeni)) {
@@ -40,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $slikaPath = 'images/djela/' . $imeDat;
             }
         } elseif (!empty($_POST['slika_url'])) {
-            //URL slike
             $slikaPath = trim($_POST['slika_url']);
         }
 
