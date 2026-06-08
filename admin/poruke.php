@@ -1,7 +1,4 @@
 <?php
-// =============================================
-// ADMIN — Pregled kontakt poruka
-// =============================================
 require_once '../includes/db.php';
 require_once '../includes/functions.php';
 require_once '../includes/auth.php';
@@ -10,22 +7,18 @@ zahtijevajAdmina();
 
 $naslovStranice = 'Kontakt poruke';
 
-// Brisanje poruke
 if (isset($_GET['brisi'])) {
     $pdo->prepare("DELETE FROM kontakt_poruke WHERE id = ?")->execute([(int)$_GET['brisi']]);
     header('Location: ' . BASE_URL . '/admin/poruke.php');
     exit;
 }
 
-// Označi kao pročitano
 if (isset($_GET['id'])) {
     $pdo->prepare("UPDATE kontakt_poruke SET procitano = 1 WHERE id = ?")->execute([(int)$_GET['id']]);
 }
 
-// Dohvati sve poruke
 $poruke = $pdo->query("SELECT * FROM kontakt_poruke ORDER BY datum_slanja DESC")->fetchAll();
 
-// Odabrana poruka za čitanje
 $odabranaPoruka = null;
 if (isset($_GET['id'])) {
     foreach ($poruke as $p) {
@@ -51,7 +44,6 @@ include '../includes/header.php';
         <h2 class="naslov-sekcija lijevo">Kontakt poruke (<?= count($poruke) ?>)</h2>
 
         <?php if ($odabranaPoruka): ?>
-        <!-- Prikaz odabrane poruke -->
         <div style="background: white; border-radius: 8px; padding: 30px; box-shadow: var(--sjena); margin-bottom: 30px; border-left: 4px solid var(--boja-akcent);">
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
                 <div>
@@ -77,7 +69,6 @@ include '../includes/header.php';
         </div>
         <?php endif; ?>
 
-        <!-- Tablica svih poruka -->
         <?php if (empty($poruke)): ?>
             <div class="poruka-info">Nema primljenih poruka.</div>
         <?php else: ?>
