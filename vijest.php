@@ -58,7 +58,7 @@ include 'includes/header.php';
             <a href="<?= BASE_URL ?>/aktualno.php" class="btn btn-primarni">
                 <i class="fa fa-arrow-left"></i> Sve vijesti
             </a>
-        </div>
+        </div> 
     </div>
 </section>
 
