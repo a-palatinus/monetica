@@ -1,23 +1,17 @@
 <?php
 $baseUrl = rtrim(str_replace('\\', '/', substr(__DIR__, strlen(rtrim($_SERVER['DOCUMENT_ROOT'], '/\\')))), '/');
 
-// podaci za spajanje na mysql server
-$host   = 'localhost';
-$user   = 'root';
-$pass   = '';
-$dbName = 'monetica';
+$host   = 'db5020639769.hosting-data.io';
+$port   = '3306';
+$user   = 'dbu3545993';
+$pass   = '#SimecProjekt';
+$dbName = 'dbs15761861';
 
 try {
-    // spajanje na mysql bez odabira baze (baza možda još ne postoji)
-    $pdo = new PDO("mysql:host=$host;charset=utf8mb4", $user, $pass, [
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbName;charset=utf8mb4", $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
-    // kreiranje baze ako ne postoji
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbName` CHARACTER SET utf8mb4 COLLATE utf8mb4_croatian_ci");
-    $pdo->exec("USE `$dbName`");
-
-    // tablica korisnika — čuva sve registrirane korisnike i admina
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS korisnici (
             id                INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +26,6 @@ try {
         )
     ");
 
-    // tablica favorita — veza između korisnika i omiljenih djela
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS favoriti (
             id               INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,7 +38,6 @@ try {
         )
     ");
 
-    // tablica newsletter pretplatnika
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS newsletter (
             id               INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +47,6 @@ try {
         )
     ");
 
-    // tablica kontakt poruka primljenih putem forme
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS kontakt_poruke (
             id           INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +58,6 @@ try {
         )
     ");
 
-    // tablica vijesti koje admin objavljuje na stranici
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS vijesti (
             id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,10 +70,8 @@ try {
         )
     ");
 
-    // kreiranje admin korisnika ako već ne postoji
     $adminPostoji = $pdo->query("SELECT id FROM korisnici WHERE email = 'admin@monetica.hr'")->fetch();
     if (!$adminPostoji) {
-        // hashiranje lozinke prije unosa
         $lozinka = password_hash('admin123', PASSWORD_DEFAULT);
         $pdo->prepare("
             INSERT INTO korisnici (ime, prezime, email, lozinka, uloga)
@@ -94,7 +82,6 @@ try {
         echo "<p style='color:orange'>⚠ Admin korisnik već postoji.</p>";
     }
 
-    // kreiranje testnog korisnika za razvoj
     $korisnikPostoji = $pdo->query("SELECT id FROM korisnici WHERE email = 'korisnik@test.hr'")->fetch();
     if (!$korisnikPostoji) {
         $lozinka = password_hash('test123', PASSWORD_DEFAULT);
@@ -105,7 +92,6 @@ try {
         echo "<p style='color:green'>Testni korisnik kreiran.</p>";
     }
 
-    // unos primjera vijesti ako tablica još nije popunjena
     $brVijesti = $pdo->query("SELECT COUNT(*) FROM vijesti")->fetchColumn();
     if ($brVijesti == 0) {
         $pdo->exec("
@@ -132,7 +118,6 @@ try {
         echo "<p style='color:green'>✓ Primjeri vijesti uneseni.</p>";
     }
 
-    // ispis završnog izvještaja
     echo "<hr style='margin:20px 0'>";
     echo "<h2 style='color:green'>Baza je uspješno postavljenja!</h2>";
     echo "<p>Sada možeš otvoriti: <a href='{$baseUrl}/index.php'>{$baseUrl}/index.php</a></p>";
@@ -141,7 +126,6 @@ try {
     echo "<p style='color:red'><strong>⚠ Obriši ili zaštiti setup.php nakon postavljanja!</strong></p>";
 
 } catch (PDOException $e) {
-    // ispiši poruku greške ako spajanje ili sql ne uspije
     echo "<h2 style='color:red'>Greška!</h2>";
     echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
     echo "<p>Provjeri jesu li XAMPP MySQL i Apache pokrenuti.</p>";
